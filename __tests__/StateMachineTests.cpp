@@ -2,59 +2,59 @@
 #include "../StateMachine.hpp"
 
 TEST_CASE("StateMachine starts Off", "[StateMachine]") {
-  StateMachine *stateMachine = new StateMachine();
+  StateMachine stateMachine;
 
-  REQUIRE(stateMachine->getState() == StateOff);
+  REQUIRE(stateMachine.getState() == StateOff);
 }
 
 TEST_CASE("When switched On, StateMachine becomes On", "[StateMachine]")
 {
-  StateMachine *stateMachine = new StateMachine();
+  StateMachine stateMachine;
 
-  stateMachine->switchOn();
+  stateMachine.switchOn();
   
-  REQUIRE(stateMachine->getState() == StateOn);
+  REQUIRE(stateMachine.getState() == StateOn);
 }
 
 
 TEST_CASE("From On, switches to Off", "[StateMachine]")
 {
-  StateMachine *stateMachine = new StateMachine();
+  StateMachine stateMachine;
 
-  stateMachine->switchOn();
-  stateMachine->switchOff();
+  stateMachine.switchOn();
+  stateMachine.switchOff();
   
-  REQUIRE(stateMachine->getState() == StateOff);
+  REQUIRE(stateMachine.getState() == StateOff);
 }
 
 
 TEST_CASE("From Off, switches to TurningOn", "[StateMachine]")
 {
-  StateMachine *stateMachine = new StateMachine();
+  StateMachine stateMachine;
 
-  stateMachine->switchGradual();
+  stateMachine.switchGradual();
   
-  REQUIRE(stateMachine->getState() == StateTurningOn);
+  REQUIRE(stateMachine.getState() == StateTurningOn);
 }
 
 TEST_CASE("From On, switches to TurningOff", "[StateMachine]")
 {
-  StateMachine *stateMachine = new StateMachine();
+  StateMachine stateMachine;
 
-  stateMachine->switchOn();
-  stateMachine->switchGradual();
+  stateMachine.switchOn();
+  stateMachine.switchGradual();
   
-  REQUIRE(stateMachine->getState() == StateTurningOff);
+  REQUIRE(stateMachine.getState() == StateTurningOff);
 }
 
 TEST_CASE("From Animating, switches to TurningOff", "[StateMachine]")
 {
-  StateMachine *stateMachine = new StateMachine();
+  StateMachine stateMachine;
 
-  stateMachine->_switchAnimatingForTest();
-  stateMachine->switchGradual();
+  stateMachine._switchAnimatingForTest();
+  stateMachine.switchGradual();
   
-  REQUIRE(stateMachine->getState() == StateTurningOff);
+  REQUIRE(stateMachine.getState() == StateTurningOff);
 }
 // Off -> GradualOn -> auto Animating
 // GradualOff -> auto Off
