@@ -1,6 +1,8 @@
 #ifndef STATE_MACHINE_HPP
 #define STATE_MACHINE_HPP
 
+#include "LightsDriver.hpp"
+
 enum State {
              StateOff,
              StateTurningOn,
@@ -11,7 +13,7 @@ enum State {
 
 class StateMachine {
 public:
-  StateMachine();
+  StateMachine(LightsDriver *lightsDriver, int gradualTimespan);
 
   State getState();
 
@@ -23,5 +25,7 @@ public:
 
 private:
   State _state;
+  LightsDriver *lightsDriver;
+  int gradualTimespan;
 };
 #endif

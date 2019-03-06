@@ -23,7 +23,7 @@ obj/catch.o:  __tests__/suite.cpp
 obj/StateMachineTests.o: __tests__/StateMachineTests.cpp
 	$(CXX) __tests__/StateMachineTests.cpp -c -o $@ $(CXXFLAGS)
 
-obj/StateMachine.o: StateMachine.hpp StateMachine.cpp
+obj/StateMachine.o: StateMachine.hpp StateMachine.cpp LightsDriver.hpp
 	$(CXX) StateMachine.cpp -c -o $@ $(CXXFLAGS)
 
 bin: obj
