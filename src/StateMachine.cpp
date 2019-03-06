@@ -1,7 +1,6 @@
 #include "StateMachine.hpp"
-#include "LightsDriver.hpp"
 
-StateMachine::StateMachine(LightsDriver *lightsDriver, int gradualTimespan) {
+StateMachine::StateMachine(AbstractLightsDriver *lightsDriver, int gradualTimespan) {
   this->_state = StateOff;
   this->lightsDriver = lightsDriver;
   this->gradualTimespan = gradualTimespan;

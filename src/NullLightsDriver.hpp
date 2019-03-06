@@ -1,6 +1,6 @@
-#include "LightsDriver.hpp"
+#include "AbstractLightsDriver.hpp"
 
-class NullLightsDriver : public LightsDriver {
+class NullLightsDriver : public AbstractLightsDriver {
   virtual void setOn();
   virtual void setOff();
   virtual void gradualOn(int transitionTimeSeconds);

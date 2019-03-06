@@ -28,10 +28,10 @@ obj/catch.o:  __tests__/suite.cpp
 obj/StateMachineTests.o: __tests__/StateMachineTests.cpp
 	$(CXX) __tests__/StateMachineTests.cpp -c -o $@ $(CXXFLAGS)
 
-obj/StateMachine.o: src/StateMachine.hpp src/StateMachine.cpp src/LightsDriver.hpp
+obj/StateMachine.o: src/StateMachine.hpp src/StateMachine.cpp src/AbstractLightsDriver.hpp
 	$(CXX) src/StateMachine.cpp -c -o $@ $(CXXFLAGS)
 
-obj/NullLightsDriver.o: src/NullLightsDriver.cpp src/LightsDriver.hpp
+obj/NullLightsDriver.o: src/NullLightsDriver.cpp src/AbstractLightsDriver.hpp
 	$(CXX) src/NullLightsDriver.cpp -c -o $@ $(CXXFLAGS)
 
 bin: obj

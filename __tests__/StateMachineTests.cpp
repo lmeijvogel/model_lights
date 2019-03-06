@@ -1,10 +1,10 @@
 #include "catch.hpp"
 #include "../src/StateMachine.hpp"
-#include "../src/LightsDriver.hpp"
+#include "../src/AbstractLightsDriver.hpp"
 
 int GRADUAL_TIMESPAN = 60;
 
-class MockLightsDriver : public LightsDriver {
+class MockLightsDriver : public AbstractLightsDriver {
 public:
   virtual void setOn();
   virtual void setOff();
