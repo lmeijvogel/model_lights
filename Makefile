@@ -1,13 +1,13 @@
 CXX = g++
 CXXFLAGS = -g -Wall -pedantic
 
-APP_FILES_O = obj/StateMachine.o
+APP_FILES_O = obj/StateMachine.o obj/NullLightsDriver.o
 TEST_FILES_O = obj/StateMachineTests.o $(APP_FILES_O)
 
 default: bin bin/main
 
 bin/main: src/main.cpp $(APP_FILES_O)
-	$(CXX) src/main.cpp $(APP_FILES_O) -o $@
+	$(CXX) src/main.cpp $(APP_FILES_O) -lncurses -o $@
 
 clean:
 	rm -r bin
@@ -30,6 +30,9 @@ obj/StateMachineTests.o: __tests__/StateMachineTests.cpp
 
 obj/StateMachine.o: src/StateMachine.hpp src/StateMachine.cpp src/LightsDriver.hpp
 	$(CXX) src/StateMachine.cpp -c -o $@ $(CXXFLAGS)
+
+obj/NullLightsDriver.o: src/NullLightsDriver.cpp src/LightsDriver.hpp
+	$(CXX) src/NullLightsDriver.cpp -c -o $@ $(CXXFLAGS)
 
 bin: obj
 	mkdir -p bin
