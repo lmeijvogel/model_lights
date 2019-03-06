@@ -4,6 +4,11 @@ CXXFLAGS = -g -Wall -pedantic
 APP_FILES_O = obj/StateMachine.o
 TEST_FILES_O = obj/StateMachineTests.o $(APP_FILES_O)
 
+default: bin bin/main
+
+bin/main: main.cpp $(APP_FILES_O)
+	$(CXX) main.cpp $(APP_FILES_O) -o $@
+
 clean:
 	rm -r bin
 	rm -f $(APP_FILES_O) $(TEST_FILES_O)
@@ -18,7 +23,7 @@ obj:
 	mkdir -p obj
 
 obj/catch.o:  __tests__/suite.cpp
-	$(CXX) __tests__/suite.cpp -c -o $@ $(CXXFLAGS) 
+	$(CXX) __tests__/suite.cpp -c -o $@ $(CXXFLAGS)
 
 obj/StateMachineTests.o: __tests__/StateMachineTests.cpp
 	$(CXX) __tests__/StateMachineTests.cpp -c -o $@ $(CXXFLAGS)
