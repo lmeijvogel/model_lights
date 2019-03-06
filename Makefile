@@ -6,8 +6,8 @@ TEST_FILES_O = obj/StateMachineTests.o $(APP_FILES_O)
 
 default: bin bin/main
 
-bin/main: main.cpp $(APP_FILES_O)
-	$(CXX) main.cpp $(APP_FILES_O) -o $@
+bin/main: src/main.cpp $(APP_FILES_O)
+	$(CXX) src/main.cpp $(APP_FILES_O) -o $@
 
 clean:
 	rm -r bin
@@ -28,8 +28,8 @@ obj/catch.o:  __tests__/suite.cpp
 obj/StateMachineTests.o: __tests__/StateMachineTests.cpp
 	$(CXX) __tests__/StateMachineTests.cpp -c -o $@ $(CXXFLAGS)
 
-obj/StateMachine.o: StateMachine.hpp StateMachine.cpp LightsDriver.hpp
-	$(CXX) StateMachine.cpp -c -o $@ $(CXXFLAGS)
+obj/StateMachine.o: src/StateMachine.hpp src/StateMachine.cpp src/LightsDriver.hpp
+	$(CXX) src/StateMachine.cpp -c -o $@ $(CXXFLAGS)
 
 bin: obj
 	mkdir -p bin

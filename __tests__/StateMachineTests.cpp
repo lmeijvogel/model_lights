@@ -1,6 +1,6 @@
 #include "catch.hpp"
-#include "../StateMachine.hpp"
-#include "../LightsDriver.hpp"
+#include "../src/StateMachine.hpp"
+#include "../src/LightsDriver.hpp"
 
 int GRADUAL_TIMESPAN = 60;
 
