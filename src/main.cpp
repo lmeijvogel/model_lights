@@ -50,28 +50,25 @@ int main() {
   print_intro();
   cbreak();
   noecho();
-
+  nodelay(stdscr, TRUE);
   refresh();
 
   while (true) {
+    usleep(200000);
     int ch = getch();
 
     if (ch == 'q') {
-
+      delete[] lights;
       cleanupAndExit();
-    } else {
+    } else if (ch != ERR) {
       handle_input(ch, stateMachine);
-      print_state(stateMachine);
-      print_lights(lights);
-
-      refresh();
     }
+    print_state(stateMachine);
+    print_lights(lights);
+
+    refresh();
   }
-
-  cleanupAndExit();
-  return 0;
 }
-
 
 LightPtr *createLights() {
   LightPtr *lights = new LightPtr[NUMBER_OF_LIGHTS];
