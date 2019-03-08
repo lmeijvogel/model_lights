@@ -1,7 +1,8 @@
-#ifndef LIGHTS_DRIVER_H
-#define LIGHTS_DRIVER_H
+#ifndef ABSTRACT_LIGHTS_DRIVER_H
+#define ABSTRACT_LIGHTS_DRIVER_H
 
 enum LightsState {
+                  LightsStateUnknown,
                   LightsOn,
                   LightsOff
 };

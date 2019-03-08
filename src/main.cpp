@@ -4,11 +4,20 @@
 
 #include <ncurses.h>
 #include "StateMachine.hpp"
-#include "NullLightsDriver.hpp"
+#include "LightsDriver.hpp"
+#include "Light.hpp"
+#include "GuiLight.hpp"
+
+const int NUMBER_OF_LIGHTS = 10;
+
+typedef GuiLight* GuiLightPtr;
+
+LightPtr *createLights();
 
 void print_intro();
 
 void print_state(StateMachine &stateMachine);
+void print_lights(LightPtr *lights);
 
 void handle_input(int ch, StateMachine &stateMachine);
 
@@ -23,7 +32,7 @@ void sigIntReceived(int s) {
 }
 
 int main() {
-  initscr();
+  LightPtr *lights = createLights();
 
   struct sigaction sigIntHandler;
   sigIntHandler.sa_handler = sigIntReceived;
@@ -32,8 +41,11 @@ int main() {
 
   sigaction(SIGINT, &sigIntHandler, NULL);
 
-  NullLightsDriver nullLightsDriver;
-  StateMachine stateMachine(&nullLightsDriver, 60);
+  LightsDriver lightsDriver(lights, NUMBER_OF_LIGHTS);
+
+  StateMachine stateMachine(&lightsDriver, 60);
+
+  initscr();
 
   print_intro();
   cbreak();
@@ -50,6 +62,7 @@ int main() {
     } else {
       handle_input(ch, stateMachine);
       print_state(stateMachine);
+      print_lights(lights);
 
       refresh();
     }
@@ -57,6 +70,19 @@ int main() {
 
   cleanupAndExit();
   return 0;
+}
+
+
+LightPtr *createLights() {
+  LightPtr *lights = new LightPtr[NUMBER_OF_LIGHTS];
+
+
+  for (int i = 0 ; i < NUMBER_OF_LIGHTS ; i++) {
+    GuiLight *light = new GuiLight;
+    lights[i] = light;
+  }
+
+  return lights;
 }
 
 void print_intro() {
@@ -103,4 +129,15 @@ void print_state(StateMachine &stateMachine) {
   }
 
   refresh();
+}
+
+void print_lights(LightPtr *lights) {
+  for (int i = 0 ; i < NUMBER_OF_LIGHTS ; i++ ) {
+    GuiLightPtr pLight = (GuiLightPtr)lights[i];
+
+    int xPos = i * 2;
+    const char *lightDisp = pLight->getState() ? "*" : ".";
+
+    mvprintw(10, 10+xPos, "%s", lightDisp);
+  }
 }
