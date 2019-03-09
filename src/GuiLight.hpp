@@ -10,7 +10,7 @@ public:
 
   bool getState();
 private:
-  bool isOn;
+  bool isOn = false;
 };
 
 #endif
