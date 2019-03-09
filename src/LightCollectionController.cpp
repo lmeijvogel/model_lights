@@ -23,6 +23,7 @@ void LightCollectionController::setOff() {
 }
 
 void LightCollectionController::setAnimating() {
+  forEachLight([] (LightControllerPtr pLightController) { pLightController->setAnimating(); });
 }
 
 void LightCollectionController::gradualOn(int transitionUntilMs) {

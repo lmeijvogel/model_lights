@@ -12,7 +12,11 @@ public:
   virtual void setAnimating();
   virtual void gradualOn(int transitionUntilMs);
   virtual void gradualOff(int transitionUntilMs);
+
 private:
   Light *pLight;
+
+  bool lightIsOn = false;
+  bool isAnimating = false;
 };
 #endif
