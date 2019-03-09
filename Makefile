@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++11 -g -Wall -pedantic
+CXXFLAGS = -std=c++14 -g -Wall -pedantic
 
 APP_FILES_O = obj/StateMachine.o obj/NullLightsDriver.o obj/LightsDriver.o obj/GuiLight.o
 TEST_FILES_O = obj/StateMachineTests.o obj/LightsDriverTests.o $(APP_FILES_O)

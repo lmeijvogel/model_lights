@@ -1,6 +1,8 @@
 #ifndef LIGHTS_DRIVER_H
 #define LIGHTS_DRIVER_H
 
+#include <functional>
+
 #include "AbstractLightsDriver.hpp"
 #include "Light.hpp"
 
@@ -22,6 +24,7 @@ private:
   int count;
 
   LightsState state = LightsStateUnknown;
-};
 
+  void forEachLight(std::function<void (LightPtr)> func);
+};
 #endif

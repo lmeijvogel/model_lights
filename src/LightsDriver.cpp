@@ -13,21 +13,13 @@ LightsState LightsDriver::getState() {
 void LightsDriver::setOn() {
   state = LightsOn;
 
-  for (int i = 0 ; i < count ; i++) {
-    LightPtr pLight = lights[i];
-
-    pLight->turnOn();
-  }
+  forEachLight([] (LightPtr pLight) { pLight->turnOn(); });
 }
 
 void LightsDriver::setOff() {
   state = LightsOff;
 
-  for (int i = 0 ; i < count ; i++) {
-    LightPtr pLight = lights[i];
-
-    pLight->turnOff();
-  }
+  forEachLight([] (LightPtr pLight) { pLight->turnOff(); });
 }
 
 void LightsDriver::setAnimating() {
@@ -35,3 +27,11 @@ void LightsDriver::setAnimating() {
 
 void LightsDriver::gradualOn(int transitionTimeSeconds) { }
 void LightsDriver::gradualOff(int transitionTimeSeconds) { }
+
+void LightsDriver::forEachLight(std::function<void (LightPtr)> callback) {
+  for (int i = 0 ; i < count ; i++) {
+    LightPtr pLight = lights[i];
+
+    callback(pLight);
+  }
+}
