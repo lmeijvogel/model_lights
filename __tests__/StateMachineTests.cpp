@@ -33,10 +33,9 @@ void MockLightsDriver::gradualOff(int transitionTimeSeconds) {
     this->receivedGradualOff = transitionTimeSeconds;
 }
 
-
-MockLightsDriver lightsDriver;
-
 TEST_CASE("StateMachine starts Off", "[StateMachine]") {
+  MockLightsDriver lightsDriver;
+
   StateMachine stateMachine(&lightsDriver, GRADUAL_TIMESPAN);
 
   REQUIRE(stateMachine.getState() == StateOff);
@@ -44,6 +43,8 @@ TEST_CASE("StateMachine starts Off", "[StateMachine]") {
 
 TEST_CASE("When switched On, StateMachine becomes On", "[StateMachine]")
 {
+  MockLightsDriver lightsDriver;
+
   StateMachine stateMachine(&lightsDriver, GRADUAL_TIMESPAN);
 
   stateMachine.switchOn();
@@ -55,6 +56,8 @@ TEST_CASE("When switched On, StateMachine becomes On", "[StateMachine]")
 
 TEST_CASE("From On, switches to Off", "[StateMachine]")
 {
+  MockLightsDriver lightsDriver;
+
   StateMachine stateMachine(&lightsDriver, GRADUAL_TIMESPAN);
 
   stateMachine.switchOn();
@@ -67,6 +70,8 @@ TEST_CASE("From On, switches to Off", "[StateMachine]")
 
 TEST_CASE("From Off, switches to TurningOn", "[StateMachine]")
 {
+  MockLightsDriver lightsDriver;
+
   StateMachine stateMachine(&lightsDriver, GRADUAL_TIMESPAN);
 
   stateMachine.switchGradual();
@@ -77,6 +82,8 @@ TEST_CASE("From Off, switches to TurningOn", "[StateMachine]")
 
 TEST_CASE("From On, switches to TurningOff", "[StateMachine]")
 {
+  MockLightsDriver lightsDriver;
+
   StateMachine stateMachine(&lightsDriver, GRADUAL_TIMESPAN);
 
   stateMachine.switchOn();
@@ -88,6 +95,8 @@ TEST_CASE("From On, switches to TurningOff", "[StateMachine]")
 
 TEST_CASE("From TurningOn, pressing switchGradual moves to TurningOff", "[StateMachine]")
 {
+  MockLightsDriver lightsDriver;
+
   StateMachine stateMachine(&lightsDriver, GRADUAL_TIMESPAN);
 
   stateMachine.switchGradual();
@@ -102,6 +111,8 @@ TEST_CASE("From TurningOn, pressing switchGradual moves to TurningOff", "[StateM
 
 TEST_CASE("From TurningOff, pressing switchGradual moves to TurningOn", "[StateMachine]")
 {
+  MockLightsDriver lightsDriver;
+
   StateMachine stateMachine(&lightsDriver, GRADUAL_TIMESPAN);
 
   stateMachine.switchOn();
@@ -116,6 +127,8 @@ TEST_CASE("From TurningOff, pressing switchGradual moves to TurningOn", "[StateM
 
 TEST_CASE("From Animating, switches to TurningOff", "[StateMachine]")
 {
+  MockLightsDriver lightsDriver;
+
   StateMachine stateMachine(&lightsDriver, GRADUAL_TIMESPAN);
 
   stateMachine._switchAnimatingForTest();
