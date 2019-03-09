@@ -16,6 +16,8 @@ public:
   virtual void setAnimating() = 0;
   virtual void gradualOn(int transitionUntilMs) = 0;
   virtual void gradualOff(int transitionUntilMs) = 0;
+
+  virtual void clockTick(int currentTimeMs) = 0;
 };
 
 #endif

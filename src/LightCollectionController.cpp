@@ -38,6 +38,10 @@ void LightCollectionController::gradualOff(int transitionUntilMs) {
   forEachLight([transitionUntilMs] (LightControllerPtr pLightController) { pLightController->gradualOff(transitionUntilMs); });
 }
 
+void LightCollectionController::clockTick(int currentTimeMs) {
+  forEachLight([currentTimeMs] (LightControllerPtr pLightController) { pLightController->clockTick(currentTimeMs); });
+}
+
 void LightCollectionController::forEachLight(std::function<void (LightControllerPtr)> callback) {
   for (int i = 0 ; i < count ; i++) {
     LightControllerPtr pLightController = lightControllers[i];

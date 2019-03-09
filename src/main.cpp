@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <chrono>
 #include <ncurses.h>
+#include <random>
 
 #include "StateMachine.hpp"
 #include "LightCollectionController.hpp"
@@ -17,7 +18,7 @@ typedef LightController* LightControllerPtr;
 typedef GuiLight* GuiLightPtr;
 
 GuiLightPtr *createLights();
-LightControllerPtr *createLightControllers(GuiLightPtr *lights, int count);
+LightControllerPtr *createLightControllers(GuiLightPtr *lights, int count, std::default_random_engine generator);
 
 void print_intro();
 
@@ -25,6 +26,7 @@ void print_state(StateMachine &stateMachine);
 void print_lights(GuiLightPtr *lights);
 
 void handle_input(int ch, StateMachine &stateMachine, int elapsedTimeMs);
+int seconds_since_epoch();
 
 void cleanupAndExit() {
   endwin();
@@ -37,8 +39,17 @@ void sigIntReceived(int s) {
 }
 
 int main() {
+  auto startTime = std::chrono::system_clock::now();
+
   GuiLightPtr *lights = createLights();
-  LightControllerPtr *lightControllers = createLightControllers(lights, NUMBER_OF_LIGHTS);
+
+  // Use a single generator to make sure that all lights get *different* random timings.
+  std::default_random_engine generator;
+
+  // Good enough for animating model house lights :D
+  generator.seed(seconds_since_epoch());
+
+  LightControllerPtr *lightControllers = createLightControllers(lights, NUMBER_OF_LIGHTS, generator);
 
   struct sigaction sigIntHandler;
   sigIntHandler.sa_handler = sigIntReceived;
@@ -47,9 +58,9 @@ int main() {
 
   sigaction(SIGINT, &sigIntHandler, NULL);
 
-  LightCollectionController lightController(lightControllers, NUMBER_OF_LIGHTS);
+  LightCollectionController lightCollectionController(lightControllers, NUMBER_OF_LIGHTS);
 
-  StateMachine stateMachine(&lightController);
+  StateMachine stateMachine(&lightCollectionController);
 
   initscr();
 
@@ -59,16 +70,17 @@ int main() {
   nodelay(stdscr, TRUE);
   refresh();
 
-  std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
-
   while (true) {
     usleep(200000);
 
-    std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+    auto now = std::chrono::system_clock::now();
 
-    int elapsedTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count();
+    int elapsedTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(now - startTime).count();
 
     stateMachine.clockTick(elapsedTimeMs);
+
+    lightCollectionController.clockTick(elapsedTimeMs);
+
     int ch = getch();
 
     if (ch == 'q') {
@@ -87,7 +99,6 @@ int main() {
 GuiLightPtr *createLights() {
   GuiLightPtr *lights = new GuiLightPtr[NUMBER_OF_LIGHTS];
 
-
   for (int i = 0 ; i < NUMBER_OF_LIGHTS ; i++) {
     GuiLight *light = new GuiLight;
     lights[i] = light;
@@ -96,11 +107,11 @@ GuiLightPtr *createLights() {
   return lights;
 }
 
-LightControllerPtr *createLightControllers(GuiLightPtr *lights, int count) {
+LightControllerPtr *createLightControllers(GuiLightPtr *lights, int count, std::default_random_engine generator) {
   LightControllerPtr *lightControllers = new LightControllerPtr[count];
 
   for (int i = 0 ; i < count ; i++) {
-    LightController *lightController = new LightController(lights[i]);
+    LightController *lightController = new LightController(lights[i], &generator);
     lightControllers[i] = lightController;
   }
 
@@ -162,4 +173,10 @@ void print_lights(GuiLightPtr *lights) {
 
     mvprintw(10, 10+xPos, "%s", lightDisp);
   }
+}
+
+int seconds_since_epoch() {
+  auto start = std::chrono::system_clock::now();
+
+  return std::chrono::duration_cast<std::chrono::milliseconds>(start.time_since_epoch()).count();
 }

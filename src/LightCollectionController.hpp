@@ -19,6 +19,8 @@ public:
   virtual void gradualOn(int transitionUntilMs);
   virtual void gradualOff(int transitionUntilMs);
 
+  virtual void clockTick(int currentTimeMs);
+
 private:
   LightControllerPtr *lightControllers;
   int count;
