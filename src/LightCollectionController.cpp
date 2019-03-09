@@ -1,43 +1,43 @@
-#include "LightsDriver.hpp"
+#include "LightCollectionController.hpp"
 #include "Light.hpp"
 
-LightsDriver::LightsDriver(LightPtr lights[], int count) {
+LightCollectionController::LightCollectionController(LightPtr lights[], int count) {
   this->lights = lights;
   this->count = count;
 }
 
-LightsState LightsDriver::getState() {
+LightsState LightCollectionController::getState() {
   return state;
 }
 
-void LightsDriver::setOn() {
+void LightCollectionController::setOn() {
   state = LightsOn;
 
   forEachLight([] (LightPtr pLight) { pLight->turnOn(); });
 }
 
-void LightsDriver::setOff() {
+void LightCollectionController::setOff() {
   state = LightsOff;
 
   forEachLight([] (LightPtr pLight) { pLight->turnOff(); });
 }
 
-void LightsDriver::setAnimating() {
+void LightCollectionController::setAnimating() {
 }
 
-void LightsDriver::gradualOn(int transitionUntilMs) {
+void LightCollectionController::gradualOn(int transitionUntilMs) {
   state = LightsTurningOn;
 
   forEachLight([transitionUntilMs] (LightPtr pLight) { pLight->gradualOn(transitionUntilMs); });
 }
 
-void LightsDriver::gradualOff(int transitionUntilMs) {
+void LightCollectionController::gradualOff(int transitionUntilMs) {
   state = LightsTurningOff;
 
   forEachLight([transitionUntilMs] (LightPtr pLight) { pLight->gradualOff(transitionUntilMs); });
 }
 
-void LightsDriver::forEachLight(std::function<void (LightPtr)> callback) {
+void LightCollectionController::forEachLight(std::function<void (LightPtr)> callback) {
   for (int i = 0 ; i < count ; i++) {
     LightPtr pLight = lights[i];
 

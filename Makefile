@@ -1,8 +1,8 @@
 CXX = g++
 CXXFLAGS = -std=c++14 -g -Wall -pedantic
 
-APP_FILES_O = obj/StateMachine.o obj/NullLightsDriver.o obj/LightsDriver.o obj/GuiLight.o
-TEST_FILES_O = obj/StateMachineTests.o obj/LightsDriverTests.o $(APP_FILES_O)
+APP_FILES_O = obj/StateMachine.o obj/NullLightController.o obj/LightCollectionController.o obj/GuiLight.o
+TEST_FILES_O = obj/StateMachineTests.o obj/LightCollectionControllerTests.o $(APP_FILES_O)
 
 default: bin bin/main
 
@@ -28,20 +28,20 @@ obj/catch.o:  __tests__/suite.cpp
 obj/StateMachineTests.o: __tests__/StateMachineTests.cpp
 	$(CXX) __tests__/StateMachineTests.cpp -c -o $@ $(CXXFLAGS)
 
-obj/LightsDriverTests.o: __tests__/LightsDriverTests.cpp
-	$(CXX) __tests__/LightsDriverTests.cpp -c -o $@ $(CXXFLAGS)
+obj/LightCollectionControllerTests.o: __tests__/LightCollectionControllerTests.cpp
+	$(CXX) __tests__/LightCollectionControllerTests.cpp -c -o $@ $(CXXFLAGS)
 
-obj/LightsDriver.o: src/LightsDriver.hpp src/LightsDriver.cpp src/AbstractLightsDriver.hpp src/Light.hpp
-	$(CXX) src/LightsDriver.cpp -c -o $@ $(CXXFLAGS)
+obj/LightCollectionController.o: src/LightCollectionController.hpp src/LightCollectionController.cpp src/AbstractLightController.hpp src/Light.hpp
+	$(CXX) src/LightCollectionController.cpp -c -o $@ $(CXXFLAGS)
 
-obj/StateMachine.o: src/StateMachine.hpp src/StateMachine.cpp src/AbstractLightsDriver.hpp
+obj/StateMachine.o: src/StateMachine.hpp src/StateMachine.cpp src/AbstractLightController.hpp
 	$(CXX) src/StateMachine.cpp -c -o $@ $(CXXFLAGS)
 
 obj/GuiLight.o: src/GuiLight.hpp src/GuiLight.cpp src/Light.hpp
 	$(CXX) src/GuiLight.cpp -c -o $@ $(CXXFLAGS)
 
-obj/NullLightsDriver.o: src/NullLightsDriver.cpp src/AbstractLightsDriver.hpp
-	$(CXX) src/NullLightsDriver.cpp -c -o $@ $(CXXFLAGS)
+obj/NullLightController.o: src/NullLightController.cpp src/AbstractLightController.hpp
+	$(CXX) src/NullLightController.cpp -c -o $@ $(CXXFLAGS)
 
 bin: obj
 	mkdir -p bin

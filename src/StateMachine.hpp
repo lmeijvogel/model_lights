@@ -1,7 +1,7 @@
 #ifndef STATE_MACHINE_HPP
 #define STATE_MACHINE_HPP
 
-#include "AbstractLightsDriver.hpp"
+#include "AbstractLightController.hpp"
 
 enum State {
              StateOff,
@@ -13,7 +13,7 @@ enum State {
 
 class StateMachine {
 public:
-  StateMachine(AbstractLightsDriver *lightsDriver);
+  StateMachine(AbstractLightController *lightController);
 
   State getState();
 
@@ -27,7 +27,7 @@ public:
 
 private:
   State _state;
-  AbstractLightsDriver *lightsDriver;
+  AbstractLightController *lightController;
   int transitionUntilMs;
 };
 #endif

@@ -5,7 +5,7 @@
 #include <ncurses.h>
 
 #include "StateMachine.hpp"
-#include "LightsDriver.hpp"
+#include "LightController.hpp"
 #include "Light.hpp"
 #include "GuiLight.hpp"
 
@@ -43,9 +43,9 @@ int main() {
 
   sigaction(SIGINT, &sigIntHandler, NULL);
 
-  LightsDriver lightsDriver(lights, NUMBER_OF_LIGHTS);
+  LightController lightController(lights, NUMBER_OF_LIGHTS);
 
-  StateMachine stateMachine(&lightsDriver);
+  StateMachine stateMachine(&lightController);
 
   initscr();
 

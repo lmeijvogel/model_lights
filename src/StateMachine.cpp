@@ -1,8 +1,8 @@
 #include "StateMachine.hpp"
 
-StateMachine::StateMachine(AbstractLightsDriver *lightsDriver) {
+StateMachine::StateMachine(AbstractLightController *lightController) {
   this->_state = StateOff;
-  this->lightsDriver = lightsDriver;
+  this->lightController = lightController;
 }
 
 State StateMachine::getState() {
@@ -11,12 +11,12 @@ State StateMachine::getState() {
 
 void StateMachine::switchOn() {
   this->_state = StateOn;
-  this->lightsDriver->setOn();
+  this->lightController->setOn();
 }
 
 void StateMachine::switchOff() {
   this->_state = StateOff;
-  this->lightsDriver->setOff();
+  this->lightController->setOff();
 }
 
 void StateMachine::switchGradual(int transitionUntilMs) {
@@ -25,13 +25,13 @@ void StateMachine::switchGradual(int transitionUntilMs) {
   case StateTurningOff:
   case StateOff:
     this->_state = StateTurningOn;
-    this->lightsDriver->gradualOn(transitionUntilMs);
+    this->lightController->gradualOn(transitionUntilMs);
     break;
   case StateTurningOn:
   case StateOn:
   case StateAnimating:
     this->_state = StateTurningOff;
-    this->lightsDriver->gradualOff(transitionUntilMs);
+    this->lightController->gradualOff(transitionUntilMs);
     break;
   default:
     // Do nothing
@@ -48,11 +48,11 @@ void StateMachine::clockTick(int currentTimeMs) {
     switch(_state) {
     case StateTurningOn:
       this->_state = StateAnimating;
-      this->lightsDriver->setAnimating();
+      this->lightController->setAnimating();
       break;
     case StateTurningOff:
       this->_state = StateOff;
-      this->lightsDriver->setOff();
+      this->lightController->setOff();
       break;
     default:
       // do nothing

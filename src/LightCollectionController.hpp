@@ -3,14 +3,14 @@
 
 #include <functional>
 
-#include "AbstractLightsDriver.hpp"
+#include "AbstractLightController.hpp"
 #include "Light.hpp"
 
 typedef Light* LightPtr;
 
-class LightsDriver : public AbstractLightsDriver {
+class LightCollectionController : public AbstractLightController {
 public:
-  LightsDriver(LightPtr lights[], int count);
+  LightCollectionController(LightPtr lights[], int count);
   virtual LightsState getState();
 
   virtual void setOn();

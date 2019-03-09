@@ -1,10 +1,10 @@
 #include "catch.hpp"
 #include "../src/StateMachine.hpp"
-#include "../src/AbstractLightsDriver.hpp"
+#include "../src/AbstractLightController.hpp"
 
 const int TRANSITION_UNTIL_MS=60;
 
-class MockLightsDriver : public AbstractLightsDriver {
+class MockLightController : public AbstractLightController {
 public:
   virtual void setOn();
   virtual void setOff();
@@ -19,86 +19,86 @@ public:
   int receivedGradualOff = 0;
 };
 
-void MockLightsDriver::setOn() {
+void MockLightController::setOn() {
     this->receivedSetOn = true;
 }
 
-void MockLightsDriver::setOff() {
+void MockLightController::setOff() {
     this->receivedSetOff = true;
 }
 
-void MockLightsDriver::setAnimating() {
+void MockLightController::setAnimating() {
   this->receivedAnimating = true;
 }
 
-void MockLightsDriver::gradualOn(int transitionTimeSeconds) {
+void MockLightController::gradualOn(int transitionTimeSeconds) {
     this->receivedGradualOn = transitionTimeSeconds;
 }
 
-void MockLightsDriver::gradualOff(int transitionTimeSeconds) {
+void MockLightController::gradualOff(int transitionTimeSeconds) {
     this->receivedGradualOff = transitionTimeSeconds;
 }
 
 TEST_CASE("StateMachine starts Off", "[StateMachine]") {
-  MockLightsDriver lightsDriver;
+  MockLightController lightController;
 
-  StateMachine stateMachine(&lightsDriver);
+  StateMachine stateMachine(&lightController);
 
   REQUIRE(stateMachine.getState() == StateOff);
 }
 
 TEST_CASE("When switched On, StateMachine becomes On", "[StateMachine]")
 {
-  MockLightsDriver lightsDriver;
-  StateMachine stateMachine(&lightsDriver);
+  MockLightController lightController;
+  StateMachine stateMachine(&lightController);
 
   stateMachine.switchOn();
 
   REQUIRE(stateMachine.getState() == StateOn);
-  REQUIRE(lightsDriver.receivedSetOn);
+  REQUIRE(lightController.receivedSetOn);
 }
 
 
 TEST_CASE("From On, switches to Off", "[StateMachine]")
 {
-  MockLightsDriver lightsDriver;
-  StateMachine stateMachine(&lightsDriver);
+  MockLightController lightController;
+  StateMachine stateMachine(&lightController);
 
   stateMachine.switchOn();
   stateMachine.switchOff();
 
   REQUIRE(stateMachine.getState() == StateOff);
-  REQUIRE(lightsDriver.receivedSetOff);
+  REQUIRE(lightController.receivedSetOff);
 }
 
 
 TEST_CASE("From Off, switches to TurningOn", "[StateMachine]")
 {
-  MockLightsDriver lightsDriver;
-  StateMachine stateMachine(&lightsDriver);
+  MockLightController lightController;
+  StateMachine stateMachine(&lightController);
 
   stateMachine.switchGradual(TRANSITION_UNTIL_MS);
 
   REQUIRE(stateMachine.getState() == StateTurningOn);
-  REQUIRE(lightsDriver.receivedGradualOn == TRANSITION_UNTIL_MS);
+  REQUIRE(lightController.receivedGradualOn == TRANSITION_UNTIL_MS);
 }
 
 TEST_CASE("From On, switches to TurningOff", "[StateMachine]")
 {
-  MockLightsDriver lightsDriver;
-  StateMachine stateMachine(&lightsDriver);
+  MockLightController lightController;
+  StateMachine stateMachine(&lightController);
 
   stateMachine.switchOn();
   stateMachine.switchGradual(TRANSITION_UNTIL_MS);
 
   REQUIRE(stateMachine.getState() == StateTurningOff);
-  REQUIRE(lightsDriver.receivedGradualOff == TRANSITION_UNTIL_MS);
+  REQUIRE(lightController.receivedGradualOff == TRANSITION_UNTIL_MS);
 }
 
 TEST_CASE("From TurningOn, pressing switchGradual moves to TurningOff", "[StateMachine]")
 {
-  MockLightsDriver lightsDriver;
-  StateMachine stateMachine(&lightsDriver);
+  MockLightController lightController;
+  StateMachine stateMachine(&lightController);
 
   stateMachine.switchGradual(TRANSITION_UNTIL_MS);
 
@@ -107,13 +107,13 @@ TEST_CASE("From TurningOn, pressing switchGradual moves to TurningOff", "[StateM
   stateMachine.switchGradual(TRANSITION_UNTIL_MS);
 
   REQUIRE(stateMachine.getState() == StateTurningOff);
-  REQUIRE(lightsDriver.receivedGradualOff == TRANSITION_UNTIL_MS);
+  REQUIRE(lightController.receivedGradualOff == TRANSITION_UNTIL_MS);
 }
 
 TEST_CASE("From TurningOff, pressing switchGradual moves to TurningOn", "[StateMachine]")
 {
-  MockLightsDriver lightsDriver;
-  StateMachine stateMachine(&lightsDriver);
+  MockLightController lightController;
+  StateMachine stateMachine(&lightController);
 
   stateMachine.switchOn();
   stateMachine.switchGradual(TRANSITION_UNTIL_MS);
@@ -127,19 +127,19 @@ TEST_CASE("From TurningOff, pressing switchGradual moves to TurningOn", "[StateM
 
 TEST_CASE("From Animating, switches to TurningOff", "[StateMachine]")
 {
-  MockLightsDriver lightsDriver;
-  StateMachine stateMachine(&lightsDriver);
+  MockLightController lightController;
+  StateMachine stateMachine(&lightController);
 
   stateMachine._switchAnimatingForTest();
   stateMachine.switchGradual(TRANSITION_UNTIL_MS);
 
   REQUIRE(stateMachine.getState() == StateTurningOff);
-  REQUIRE(lightsDriver.receivedGradualOff == TRANSITION_UNTIL_MS);
+  REQUIRE(lightController.receivedGradualOff == TRANSITION_UNTIL_MS);
 }
 
 TEST_CASE("From TurningOn to Animating", "[StateMachine]") {
-  MockLightsDriver lightsDriver;
-  StateMachine stateMachine(&lightsDriver);
+  MockLightController lightController;
+  StateMachine stateMachine(&lightController);
 
   stateMachine.switchGradual(TRANSITION_UNTIL_MS);
 
@@ -154,12 +154,12 @@ TEST_CASE("From TurningOn to Animating", "[StateMachine]") {
   // Past timespan, transition to animating
   stateMachine.clockTick(tickDuration*2);
   REQUIRE(stateMachine.getState() == StateAnimating);
-  REQUIRE(lightsDriver.receivedAnimating == true);
+  REQUIRE(lightController.receivedAnimating == true);
 }
 
 TEST_CASE("From TurningOff to Off", "[StateMachine]") {
-  MockLightsDriver lightsDriver;
-  StateMachine stateMachine(&lightsDriver);
+  MockLightController lightController;
+  StateMachine stateMachine(&lightController);
 
   stateMachine.switchOn();
   stateMachine.switchGradual(TRANSITION_UNTIL_MS);
@@ -175,7 +175,7 @@ TEST_CASE("From TurningOff to Off", "[StateMachine]") {
   // Past timespan, transition to off
   stateMachine.clockTick(tickDuration*2);
   REQUIRE(stateMachine.getState() == StateOff);
-  REQUIRE(lightsDriver.receivedSetOff == true);
+  REQUIRE(lightController.receivedSetOff == true);
 }
 
 // GradualOff -> auto Off

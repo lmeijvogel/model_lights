@@ -9,7 +9,7 @@ enum LightsState {
                   LightsOff
 };
 
-class AbstractLightsDriver {
+class AbstractLightController {
 public:
   virtual void setOn() = 0;
   virtual void setOff() = 0;
