@@ -6,8 +6,12 @@ class MockLight : public Light {
 public:
   virtual void turnOn();
   virtual void turnOff();
+  virtual void gradualOn(int transitionUntilMs);
+  virtual void gradualOff(int transitionUntilMs);
 
-  bool isOn;
+  bool isOn = false;
+  bool isGraduallyTurningOn = false;
+  bool isGraduallyTurningOff = false;
 };
 
 void MockLight::turnOn() {
@@ -17,7 +21,17 @@ void MockLight::turnOff() {
   isOn = false;
 }
 
+void MockLight::gradualOn(int transitionUntilMs) {
+  isGraduallyTurningOn = true;
+}
+
+void MockLight::gradualOff(int transitionUntilMs) {
+  isGraduallyTurningOff = true;
+}
+
 typedef MockLight* MockLightPtr;
+
+const int TRANSITION_UNTIL_MS = 60;
 
 TEST_CASE("LightsDriver starts in state Unknown", "[LightsDriver]") {
   const int count = 10;
@@ -60,6 +74,34 @@ TEST_CASE("LightsDriver starts in state Unknown", "[LightsDriver]") {
       MockLightPtr pLight = (MockLightPtr)lights[i];
 
       REQUIRE(pLight->isOn);
+    }
+  }
+
+  SECTION("LightsDriver gradually turns on all lights", "[LightsDriver") {
+    LightsDriver lightsDriver((Light **)lights, count);
+
+    lightsDriver.gradualOn(TRANSITION_UNTIL_MS);
+
+    REQUIRE(lightsDriver.getState() == LightsTurningOn);
+
+    for (int i = 0 ; i < count ; i++) {
+      MockLightPtr pLight = (MockLightPtr)lights[i];
+
+      REQUIRE(pLight->isGraduallyTurningOn);
+    }
+  }
+
+  SECTION("LightsDriver gradually turns off all lights", "[LightsDriver") {
+    LightsDriver lightsDriver((Light **)lights, count);
+
+    lightsDriver.gradualOff(TRANSITION_UNTIL_MS);
+
+    REQUIRE(lightsDriver.getState() == LightsTurningOff);
+
+    for (int i = 0 ; i < count ; i++) {
+      MockLightPtr pLight = (MockLightPtr)lights[i];
+
+      REQUIRE(pLight->isGraduallyTurningOff);
     }
   }
 }

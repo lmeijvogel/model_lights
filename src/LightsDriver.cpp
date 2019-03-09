@@ -25,8 +25,17 @@ void LightsDriver::setOff() {
 void LightsDriver::setAnimating() {
 }
 
-void LightsDriver::gradualOn(int transitionTimeSeconds) { }
-void LightsDriver::gradualOff(int transitionTimeSeconds) { }
+void LightsDriver::gradualOn(int transitionUntilMs) {
+  state = LightsTurningOn;
+
+  forEachLight([transitionUntilMs] (LightPtr pLight) { pLight->gradualOn(transitionUntilMs); });
+}
+
+void LightsDriver::gradualOff(int transitionUntilMs) {
+  state = LightsTurningOff;
+
+  forEachLight([transitionUntilMs] (LightPtr pLight) { pLight->gradualOff(transitionUntilMs); });
+}
 
 void LightsDriver::forEachLight(std::function<void (LightPtr)> callback) {
   for (int i = 0 ; i < count ; i++) {

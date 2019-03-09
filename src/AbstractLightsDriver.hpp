@@ -3,6 +3,8 @@
 
 enum LightsState {
                   LightsStateUnknown,
+                  LightsTurningOn,
+                  LightsTurningOff,
                   LightsOn,
                   LightsOff
 };
