@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -std=c++14 -g -Wall -pedantic
 
 APP_FILES_O = obj/StateMachine.o obj/NullLightController.o obj/LightCollectionController.o obj/GuiLight.o
-TEST_FILES_O = obj/StateMachineTests.o obj/LightCollectionControllerTests.o $(APP_FILES_O)
+TEST_FILES_O = obj/MockLightController.o obj/StateMachineTests.o obj/LightCollectionControllerTests.o $(APP_FILES_O)
 
 default: bin bin/main
 
@@ -24,6 +24,9 @@ obj:
 
 obj/catch.o:  __tests__/suite.cpp
 	$(CXX) __tests__/suite.cpp -c -o $@ $(CXXFLAGS)
+
+obj/MockLightController.o: __tests__/MockLightController.cpp __tests__/MockLightController.hpp
+	$(CXX) __tests__/MockLightController.cpp -c -o $@ $(CXXFLAGS)
 
 obj/StateMachineTests.o: __tests__/StateMachineTests.cpp
 	$(CXX) __tests__/StateMachineTests.cpp -c -o $@ $(CXXFLAGS)

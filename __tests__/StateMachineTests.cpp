@@ -2,42 +2,9 @@
 #include "../src/StateMachine.hpp"
 #include "../src/AbstractLightController.hpp"
 
+#include "MockLightController.hpp"
+
 const int TRANSITION_UNTIL_MS=60;
-
-class MockLightController : public AbstractLightController {
-public:
-  virtual void setOn();
-  virtual void setOff();
-  virtual void setAnimating();
-  virtual void gradualOn(int transitionTimeSeconds);
-  virtual void gradualOff(int transitionTimeSeconds);
-
-  bool receivedSetOn = false;
-  bool receivedSetOff = false;
-  bool receivedAnimating = false;
-  int receivedGradualOn = 0;
-  int receivedGradualOff = 0;
-};
-
-void MockLightController::setOn() {
-    this->receivedSetOn = true;
-}
-
-void MockLightController::setOff() {
-    this->receivedSetOff = true;
-}
-
-void MockLightController::setAnimating() {
-  this->receivedAnimating = true;
-}
-
-void MockLightController::gradualOn(int transitionTimeSeconds) {
-    this->receivedGradualOn = transitionTimeSeconds;
-}
-
-void MockLightController::gradualOff(int transitionTimeSeconds) {
-    this->receivedGradualOff = transitionTimeSeconds;
-}
 
 TEST_CASE("StateMachine starts Off", "[StateMachine]") {
   MockLightController lightController;
