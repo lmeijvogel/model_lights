@@ -5,6 +5,7 @@
 #include <ncurses.h>
 
 #include "StateMachine.hpp"
+#include "LightCollectionController.hpp"
 #include "LightController.hpp"
 #include "Light.hpp"
 #include "GuiLight.hpp"
@@ -12,14 +13,16 @@
 const int NUMBER_OF_LIGHTS = 10;
 
 const int GRADUAL_TRANSITION_PERIOD_MS = 6*1000;
+typedef LightController* LightControllerPtr;
 typedef GuiLight* GuiLightPtr;
 
-LightPtr *createLights();
+GuiLightPtr *createLights();
+LightControllerPtr *createLightControllers(GuiLightPtr *lights, int count);
 
 void print_intro();
 
 void print_state(StateMachine &stateMachine);
-void print_lights(LightPtr *lights);
+void print_lights(GuiLightPtr *lights);
 
 void handle_input(int ch, StateMachine &stateMachine, int elapsedTimeMs);
 
@@ -34,7 +37,8 @@ void sigIntReceived(int s) {
 }
 
 int main() {
-  LightPtr *lights = createLights();
+  GuiLightPtr *lights = createLights();
+  LightControllerPtr *lightControllers = createLightControllers(lights, NUMBER_OF_LIGHTS);
 
   struct sigaction sigIntHandler;
   sigIntHandler.sa_handler = sigIntReceived;
@@ -43,7 +47,7 @@ int main() {
 
   sigaction(SIGINT, &sigIntHandler, NULL);
 
-  LightController lightController(lights, NUMBER_OF_LIGHTS);
+  LightCollectionController lightController(lightControllers, NUMBER_OF_LIGHTS);
 
   StateMachine stateMachine(&lightController);
 
@@ -80,8 +84,8 @@ int main() {
   }
 }
 
-LightPtr *createLights() {
-  LightPtr *lights = new LightPtr[NUMBER_OF_LIGHTS];
+GuiLightPtr *createLights() {
+  GuiLightPtr *lights = new GuiLightPtr[NUMBER_OF_LIGHTS];
 
 
   for (int i = 0 ; i < NUMBER_OF_LIGHTS ; i++) {
@@ -90,6 +94,17 @@ LightPtr *createLights() {
   }
 
   return lights;
+}
+
+LightControllerPtr *createLightControllers(GuiLightPtr *lights, int count) {
+  LightControllerPtr *lightControllers = new LightControllerPtr[count];
+
+  for (int i = 0 ; i < count ; i++) {
+    LightController *lightController = new LightController(lights[i]);
+    lightControllers[i] = lightController;
+  }
+
+  return lightControllers;
 }
 
 void print_intro() {
@@ -138,7 +153,7 @@ void print_state(StateMachine &stateMachine) {
   refresh();
 }
 
-void print_lights(LightPtr *lights) {
+void print_lights(GuiLightPtr *lights) {
   for (int i = 0 ; i < NUMBER_OF_LIGHTS ; i++ ) {
     GuiLightPtr pLight = (GuiLightPtr)lights[i];
 

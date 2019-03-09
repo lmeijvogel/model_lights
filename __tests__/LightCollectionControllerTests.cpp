@@ -1,55 +1,30 @@
 #include "catch.hpp"
 #include "../src/LightCollectionController.hpp"
-#include "../src/Light.hpp"
+#include "../src/LightController.hpp"
 
-class MockLight : public Light {
-public:
-  virtual void turnOn();
-  virtual void turnOff();
-  virtual void gradualOn(int transitionUntilMs);
-  virtual void gradualOff(int transitionUntilMs);
+#include "MockLightController.hpp"
 
-  bool isOn = false;
-  bool isGraduallyTurningOn = false;
-  bool isGraduallyTurningOff = false;
-};
-
-void MockLight::turnOn() {
-  isOn = true;
-}
-void MockLight::turnOff() {
-  isOn = false;
-}
-
-void MockLight::gradualOn(int transitionUntilMs) {
-  isGraduallyTurningOn = true;
-}
-
-void MockLight::gradualOff(int transitionUntilMs) {
-  isGraduallyTurningOff = true;
-}
-
-typedef MockLight* MockLightPtr;
+typedef MockLightController* MockLightControllerPtr;
 
 const int TRANSITION_UNTIL_MS = 60;
 
 TEST_CASE("LightCollectionController starts in state Unknown", "[LightCollectionController]") {
   const int count = 10;
-  LightPtr *lights = new LightPtr[10];
+  MockLightControllerPtr *lightControllers = new MockLightControllerPtr[10];
 
   for (int i = 0 ; i < 10 ; i++) {
-    MockLightPtr mockLight = new MockLight;
-    lights[i] = mockLight;
+    MockLightControllerPtr mockLightController = new MockLightController;
+    lightControllers[i] = mockLightController;
   }
 
   SECTION("LightCollectionController starts in state Unknown", "[LightCollectionController]") {
-    LightCollectionController lightCollectionController((Light **)lights, count);
+    LightCollectionController lightCollectionController((LightController **)lightControllers, count);
 
     REQUIRE(lightCollectionController.getState() == LightsStateUnknown);
   }
 
-  SECTION("LightCollectionController turns off all lights", "[LightCollectionController") {
-    LightCollectionController lightCollectionController((Light **)lights, count);
+  SECTION("LightCollectionController turns off all lightControllers", "[LightCollectionController") {
+    LightCollectionController lightCollectionController((LightController **)lightControllers, count);
 
     lightCollectionController.setOn();
     lightCollectionController.setOff();
@@ -57,51 +32,51 @@ TEST_CASE("LightCollectionController starts in state Unknown", "[LightCollection
     REQUIRE(lightCollectionController.getState() == LightsOff);
 
     for (int i = 0 ; i < count ; i++) {
-      MockLightPtr pLight = (MockLightPtr)lights[i];
+      MockLightControllerPtr pLightController = (MockLightControllerPtr)lightControllers[i];
 
-      REQUIRE(!pLight->isOn);
+      REQUIRE(pLightController->receivedSetOff);
     }
   }
 
-  SECTION("LightCollectionController turns on all lights", "[LightCollectionController") {
-    LightCollectionController lightCollectionController((Light **)lights, count);
+  SECTION("LightCollectionController turns on all lightControllers", "[LightCollectionController") {
+    LightCollectionController lightCollectionController((LightController **)lightControllers, count);
 
     lightCollectionController.setOn();
 
     REQUIRE(lightCollectionController.getState() == LightsOn);
 
     for (int i = 0 ; i < count ; i++) {
-      MockLightPtr pLight = (MockLightPtr)lights[i];
+      MockLightControllerPtr pLightController = (MockLightControllerPtr)lightControllers[i];
 
-      REQUIRE(pLight->isOn);
+      REQUIRE(pLightController->receivedSetOn);
     }
   }
 
-  SECTION("LightCollectionController gradually turns on all lights", "[LightCollectionController") {
-    LightCollectionController lightCollectionController((Light **)lights, count);
+  SECTION("LightCollectionController gradually turns on all lightControllers", "[LightCollectionController") {
+    LightCollectionController lightCollectionController((LightController **)lightControllers, count);
 
     lightCollectionController.gradualOn(TRANSITION_UNTIL_MS);
 
     REQUIRE(lightCollectionController.getState() == LightsTurningOn);
 
     for (int i = 0 ; i < count ; i++) {
-      MockLightPtr pLight = (MockLightPtr)lights[i];
+      MockLightControllerPtr pLightController = (MockLightControllerPtr)lightControllers[i];
 
-      REQUIRE(pLight->isGraduallyTurningOn);
+      REQUIRE(pLightController->receivedGradualOn == TRANSITION_UNTIL_MS);
     }
   }
 
-  SECTION("LightCollectionController gradually turns off all lights", "[LightCollectionController") {
-    LightCollectionController lightCollectionController((Light **)lights, count);
+  SECTION("LightCollectionController gradually turns off all lightControllers", "[LightCollectionController") {
+    LightCollectionController lightCollectionController((LightController **)lightControllers, count);
 
     lightCollectionController.gradualOff(TRANSITION_UNTIL_MS);
 
     REQUIRE(lightCollectionController.getState() == LightsTurningOff);
 
     for (int i = 0 ; i < count ; i++) {
-      MockLightPtr pLight = (MockLightPtr)lights[i];
+      MockLightControllerPtr pLightController = (MockLightControllerPtr)lightControllers[i];
 
-      REQUIRE(pLight->isGraduallyTurningOff);
+      REQUIRE(pLightController->receivedGradualOff == TRANSITION_UNTIL_MS);
     }
   }
 }

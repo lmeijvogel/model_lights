@@ -1,16 +1,16 @@
-#ifndef LIGHTS_DRIVER_H
-#define LIGHTS_DRIVER_H
+#ifndef LIGHT_COLLECTION_CONTROLLER_H
+#define LIGHT_COLLECTION_CONTROLLER_H
 
 #include <functional>
 
 #include "AbstractLightController.hpp"
-#include "Light.hpp"
+#include "LightController.hpp"
 
-typedef Light* LightPtr;
+typedef LightController* LightControllerPtr;
 
 class LightCollectionController : public AbstractLightController {
 public:
-  LightCollectionController(LightPtr lights[], int count);
+  LightCollectionController(LightControllerPtr lightControllers[], int count);
   virtual LightsState getState();
 
   virtual void setOn();
@@ -20,11 +20,11 @@ public:
   virtual void gradualOff(int transitionUntilMs);
 
 private:
-  LightPtr *lights;
+  LightControllerPtr *lightControllers;
   int count;
 
   LightsState state = LightsStateUnknown;
 
-  void forEachLight(std::function<void (LightPtr)> func);
+  void forEachLight(std::function<void (LightControllerPtr)> func);
 };
 #endif

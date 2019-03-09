@@ -1,8 +1,8 @@
 CXX = g++
 CXXFLAGS = -std=c++14 -g -Wall -pedantic
 
-APP_FILES_O = obj/StateMachine.o obj/NullLightController.o obj/LightCollectionController.o obj/GuiLight.o
-TEST_FILES_O = obj/MockLightController.o obj/StateMachineTests.o obj/LightCollectionControllerTests.o $(APP_FILES_O)
+APP_FILES_O = obj/StateMachine.o obj/NullLightController.o obj/LightCollectionController.o obj/LightController.o obj/GuiLight.o
+TEST_FILES_O = obj/MockLightController.o obj/StateMachineTests.o obj/LightCollectionControllerTests.o obj/LightControllerTests.o $(APP_FILES_O)
 
 default: bin bin/main
 
@@ -31,6 +31,9 @@ obj/MockLightController.o: __tests__/MockLightController.cpp __tests__/MockLight
 obj/StateMachineTests.o: __tests__/StateMachineTests.cpp
 	$(CXX) __tests__/StateMachineTests.cpp -c -o $@ $(CXXFLAGS)
 
+obj/LightControllerTests.o: __tests__/LightControllerTests.cpp
+	$(CXX) __tests__/LightControllerTests.cpp -c -o $@ $(CXXFLAGS)
+
 obj/LightCollectionControllerTests.o: __tests__/LightCollectionControllerTests.cpp
 	$(CXX) __tests__/LightCollectionControllerTests.cpp -c -o $@ $(CXXFLAGS)
 
@@ -39,6 +42,9 @@ obj/LightCollectionController.o: src/LightCollectionController.hpp src/LightColl
 
 obj/StateMachine.o: src/StateMachine.hpp src/StateMachine.cpp src/AbstractLightController.hpp
 	$(CXX) src/StateMachine.cpp -c -o $@ $(CXXFLAGS)
+
+obj/LightController.o: src/LightController.hpp src/LightController.cpp src/AbstractLightController.hpp
+	$(CXX) src/LightController.cpp -c -o $@ $(CXXFLAGS)
 
 obj/GuiLight.o: src/GuiLight.hpp src/GuiLight.cpp src/Light.hpp
 	$(CXX) src/GuiLight.cpp -c -o $@ $(CXXFLAGS)

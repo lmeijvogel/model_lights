@@ -1,8 +1,8 @@
 #include "LightCollectionController.hpp"
 #include "Light.hpp"
 
-LightCollectionController::LightCollectionController(LightPtr lights[], int count) {
-  this->lights = lights;
+LightCollectionController::LightCollectionController(LightControllerPtr lightControllers[], int count) {
+  this->lightControllers = lightControllers;
   this->count = count;
 }
 
@@ -13,13 +13,13 @@ LightsState LightCollectionController::getState() {
 void LightCollectionController::setOn() {
   state = LightsOn;
 
-  forEachLight([] (LightPtr pLight) { pLight->turnOn(); });
+  forEachLight([] (LightControllerPtr pLightController) { pLightController->setOn(); });
 }
 
 void LightCollectionController::setOff() {
   state = LightsOff;
 
-  forEachLight([] (LightPtr pLight) { pLight->turnOff(); });
+  forEachLight([] (LightControllerPtr pLightController) { pLightController->setOff(); });
 }
 
 void LightCollectionController::setAnimating() {
@@ -28,19 +28,19 @@ void LightCollectionController::setAnimating() {
 void LightCollectionController::gradualOn(int transitionUntilMs) {
   state = LightsTurningOn;
 
-  forEachLight([transitionUntilMs] (LightPtr pLight) { pLight->gradualOn(transitionUntilMs); });
+  forEachLight([transitionUntilMs] (LightControllerPtr pLightController) { pLightController->gradualOn(transitionUntilMs); });
 }
 
 void LightCollectionController::gradualOff(int transitionUntilMs) {
   state = LightsTurningOff;
 
-  forEachLight([transitionUntilMs] (LightPtr pLight) { pLight->gradualOff(transitionUntilMs); });
+  forEachLight([transitionUntilMs] (LightControllerPtr pLightController) { pLightController->gradualOff(transitionUntilMs); });
 }
 
-void LightCollectionController::forEachLight(std::function<void (LightPtr)> callback) {
+void LightCollectionController::forEachLight(std::function<void (LightControllerPtr)> callback) {
   for (int i = 0 ; i < count ; i++) {
-    LightPtr pLight = lights[i];
+    LightControllerPtr pLightController = lightControllers[i];
 
-    callback(pLight);
+    callback(pLightController);
   }
 }
