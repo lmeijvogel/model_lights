@@ -13,8 +13,9 @@ public:
 
   virtual void setOn();
   virtual void setOff();
-  virtual void gradualOn(int transitionTimeSeconds);
-  virtual void gradualOff(int transitionTimeSeconds);
+  virtual void setAnimating();
+  virtual void gradualOn(int transitionUntilMs);
+  virtual void gradualOff(int transitionUntilMs);
 
 private:
   LightPtr *lights;

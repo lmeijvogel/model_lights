@@ -1,8 +1,9 @@
 #include <signal.h>
 #include <unistd.h>
 #include <stdlib.h>
-
+#include <chrono>
 #include <ncurses.h>
+
 #include "StateMachine.hpp"
 #include "LightsDriver.hpp"
 #include "Light.hpp"
@@ -10,6 +11,7 @@
 
 const int NUMBER_OF_LIGHTS = 10;
 
+const int GRADUAL_TRANSITION_PERIOD_MS = 6*1000;
 typedef GuiLight* GuiLightPtr;
 
 LightPtr *createLights();
@@ -19,7 +21,7 @@ void print_intro();
 void print_state(StateMachine &stateMachine);
 void print_lights(LightPtr *lights);
 
-void handle_input(int ch, StateMachine &stateMachine);
+void handle_input(int ch, StateMachine &stateMachine, int elapsedTimeMs);
 
 void cleanupAndExit() {
   endwin();
@@ -43,7 +45,7 @@ int main() {
 
   LightsDriver lightsDriver(lights, NUMBER_OF_LIGHTS);
 
-  StateMachine stateMachine(&lightsDriver, 60);
+  StateMachine stateMachine(&lightsDriver);
 
   initscr();
 
@@ -53,15 +55,23 @@ int main() {
   nodelay(stdscr, TRUE);
   refresh();
 
+  std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
+
   while (true) {
     usleep(200000);
+
+    std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+
+    int elapsedTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count();
+
+    stateMachine.clockTick(elapsedTimeMs);
     int ch = getch();
 
     if (ch == 'q') {
       delete[] lights;
       cleanupAndExit();
     } else if (ch != ERR) {
-      handle_input(ch, stateMachine);
+      handle_input(ch, stateMachine, elapsedTimeMs);
     }
     print_state(stateMachine);
     print_lights(lights);
@@ -90,13 +100,13 @@ void print_intro() {
   refresh();
 }
 
-void handle_input(int ch, StateMachine &stateMachine) {
+void handle_input(int ch, StateMachine &stateMachine, int elapsedTimeMs) {
   switch(ch) {
   case 'z':
     stateMachine.switchOff();
     break;
   case 'x':
-    stateMachine.switchGradual();
+    stateMachine.switchGradual(elapsedTimeMs + GRADUAL_TRANSITION_PERIOD_MS);
     break;
   case 'c':
     stateMachine.switchOn();

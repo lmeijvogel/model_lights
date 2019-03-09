@@ -13,19 +13,21 @@ enum State {
 
 class StateMachine {
 public:
-  StateMachine(AbstractLightsDriver *lightsDriver, int gradualTimespan);
+  StateMachine(AbstractLightsDriver *lightsDriver);
 
   State getState();
 
   void switchOff();
   void switchOn();
-  void switchGradual();
+  void switchGradual(int transitionUntilMs);
+
+  void clockTick(int currentTimeMs);
 
   void _switchAnimatingForTest();
 
 private:
   State _state;
   AbstractLightsDriver *lightsDriver;
-  int gradualTimespan;
+  int transitionUntilMs;
 };
 #endif

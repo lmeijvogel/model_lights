@@ -30,5 +30,8 @@ void LightsDriver::setOff() {
   }
 }
 
+void LightsDriver::setAnimating() {
+}
+
 void LightsDriver::gradualOn(int transitionTimeSeconds) { }
 void LightsDriver::gradualOff(int transitionTimeSeconds) { }
