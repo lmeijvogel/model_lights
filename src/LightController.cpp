@@ -19,7 +19,7 @@ void LightController::setOn() {
 void LightController::setOff() {
   pLight->turnOff();
 
-  this->lightIsOn = true;
+  this->lightIsOn = false;
   this->isAnimating = false;
 }
 
