@@ -1,14 +1,13 @@
 #ifndef LIGHT_CONTROLLER_H
 #define LIGHT_CONTROLLER_H
 
-#include <random>
-
 #include "AbstractLightController.hpp"
 #include "Light.hpp"
+#include "RandomGenerator.hpp"
 
 class LightController : public AbstractLightController {
 public:
-  LightController(Light *pLight, std::default_random_engine *generator);
+  LightController(Light *pLight, RandomGenerator *randomGenerator);
   virtual void setOn();
   virtual void setOff();
   virtual void setAnimating();
@@ -18,7 +17,7 @@ public:
 
 private:
   Light *pLight;
-  std::default_random_engine *generator;
+  RandomGenerator *randomGenerator;
 
   bool lightIsOn = false;
   bool isAnimating = false;

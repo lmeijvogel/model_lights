@@ -1,7 +1,7 @@
 CXX = g++
-CXXFLAGS = -std=c++14 -g -Wall -pedantic
+CXXFLAGS = -g -Wall -pedantic
 
-APP_FILES_O = obj/StateMachine.o obj/NullLightController.o obj/LightCollectionController.o obj/LightController.o obj/GuiLight.o
+APP_FILES_O = obj/StateMachine.o obj/NullLightController.o obj/LightCollectionController.o obj/LightController.o obj/GuiLight.o obj/RandomGenerator.o
 TEST_FILES_O = obj/MockLightController.o obj/StateMachineTests.o obj/LightCollectionControllerTests.o obj/LightControllerTests.o $(APP_FILES_O)
 
 default: bin bin/main
@@ -51,6 +51,9 @@ obj/GuiLight.o: src/GuiLight.hpp src/GuiLight.cpp src/Light.hpp
 
 obj/NullLightController.o: src/NullLightController.cpp src/AbstractLightController.hpp
 	$(CXX) src/NullLightController.cpp -c -o $@ $(CXXFLAGS)
+
+obj/RandomGenerator.o: src/RandomGenerator.cpp
+	$(CXX) src/RandomGenerator.cpp -c -o $@ $(CXXFLAGS)
 
 bin: obj
 	mkdir -p bin

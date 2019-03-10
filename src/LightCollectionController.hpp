@@ -1,8 +1,6 @@
 #ifndef LIGHT_COLLECTION_CONTROLLER_H
 #define LIGHT_COLLECTION_CONTROLLER_H
 
-#include <functional>
-
 #include "AbstractLightController.hpp"
 #include "LightController.hpp"
 
@@ -26,7 +24,5 @@ private:
   int count;
 
   LightsState state = LightsStateUnknown;
-
-  void forEachLight(std::function<void (LightControllerPtr)> func);
 };
 #endif

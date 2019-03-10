@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <chrono>
 #include <ncurses.h>
-#include <random>
 
 #include "StateMachine.hpp"
 #include "LightCollectionController.hpp"
@@ -11,14 +10,14 @@
 #include "Light.hpp"
 #include "GuiLight.hpp"
 
-const int NUMBER_OF_LIGHTS = 10;
+const int NUMBER_OF_LIGHTS = 50;
+const int GRADUAL_TRANSITION_PERIOD_MS = 1*1000;
 
-const int GRADUAL_TRANSITION_PERIOD_MS = 6*1000;
 typedef LightController* LightControllerPtr;
 typedef GuiLight* GuiLightPtr;
 
 GuiLightPtr *createLights();
-LightControllerPtr *createLightControllers(GuiLightPtr *lights, int count, std::default_random_engine generator);
+LightControllerPtr *createLightControllers(GuiLightPtr *lights, int count, RandomGenerator *randomGenerator);
 
 void print_intro();
 
@@ -44,12 +43,10 @@ int main() {
   GuiLightPtr *lights = createLights();
 
   // Use a single generator to make sure that all lights get *different* random timings.
-  std::default_random_engine generator;
+  // Seed is good enough for animating model house lights :D
+  RandomGenerator randomGenerator(seconds_since_epoch());
 
-  // Good enough for animating model house lights :D
-  generator.seed(seconds_since_epoch());
-
-  LightControllerPtr *lightControllers = createLightControllers(lights, NUMBER_OF_LIGHTS, generator);
+  LightControllerPtr *lightControllers = createLightControllers(lights, NUMBER_OF_LIGHTS, &randomGenerator);
 
   struct sigaction sigIntHandler;
   sigIntHandler.sa_handler = sigIntReceived;
@@ -107,11 +104,11 @@ GuiLightPtr *createLights() {
   return lights;
 }
 
-LightControllerPtr *createLightControllers(GuiLightPtr *lights, int count, std::default_random_engine generator) {
+LightControllerPtr *createLightControllers(GuiLightPtr *lights, int count, RandomGenerator *randomGenerator) {
   LightControllerPtr *lightControllers = new LightControllerPtr[count];
 
   for (int i = 0 ; i < count ; i++) {
-    LightController *lightController = new LightController(lights[i], &generator);
+    LightController *lightController = new LightController(lights[i], randomGenerator);
     lightControllers[i] = lightController;
   }
 

@@ -1,5 +1,10 @@
 #include "LightCollectionController.hpp"
+#include "LightController.hpp"
 #include "Light.hpp"
+
+typedef LightController* LightControllerPtr;
+
+#define forEachLightController(X) {for (int i = 0 ; i < count ; i++) { LightControllerPtr pLightController = lightControllers[i]; (X); }}
 
 LightCollectionController::LightCollectionController(LightControllerPtr lightControllers[], int count) {
   this->lightControllers = lightControllers;
@@ -13,39 +18,31 @@ LightsState LightCollectionController::getState() {
 void LightCollectionController::setOn() {
   state = LightsOn;
 
-  forEachLight([] (LightControllerPtr pLightController) { pLightController->setOn(); });
+  forEachLightController( pLightController->setOn());
 }
 
 void LightCollectionController::setOff() {
   state = LightsOff;
 
-  forEachLight([] (LightControllerPtr pLightController) { pLightController->setOff(); });
+  forEachLightController( pLightController->setOff());
 }
 
 void LightCollectionController::setAnimating() {
-  forEachLight([] (LightControllerPtr pLightController) { pLightController->setAnimating(); });
+  forEachLightController( pLightController->setAnimating());
 }
 
 void LightCollectionController::gradualOn(int transitionUntilMs) {
   state = LightsTurningOn;
 
-  forEachLight([transitionUntilMs] (LightControllerPtr pLightController) { pLightController->gradualOn(transitionUntilMs); });
+  forEachLightController(pLightController->gradualOn(transitionUntilMs));
 }
 
 void LightCollectionController::gradualOff(int transitionUntilMs) {
   state = LightsTurningOff;
 
-  forEachLight([transitionUntilMs] (LightControllerPtr pLightController) { pLightController->gradualOff(transitionUntilMs); });
+  forEachLightController(pLightController->gradualOff(transitionUntilMs));
 }
 
 void LightCollectionController::clockTick(int currentTimeMs) {
-  forEachLight([currentTimeMs] (LightControllerPtr pLightController) { pLightController->clockTick(currentTimeMs); });
-}
-
-void LightCollectionController::forEachLight(std::function<void (LightControllerPtr)> callback) {
-  for (int i = 0 ; i < count ; i++) {
-    LightControllerPtr pLightController = lightControllers[i];
-
-    callback(pLightController);
-  }
+  forEachLightController(pLightController->clockTick(currentTimeMs));
 }

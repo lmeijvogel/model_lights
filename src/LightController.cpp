@@ -2,9 +2,9 @@
 
 const int ON_TIME_DURATION = 1200;
 const int OFF_TIME_DURATION = 60;
-LightController::LightController(Light *pLight, std::default_random_engine *generator) {
+LightController::LightController(Light *pLight, RandomGenerator *randomGenerator) {
   this->pLight = pLight;
-  this->generator = generator;
+  this->randomGenerator = randomGenerator;
 }
 
 void LightController::setOn() {
@@ -64,8 +64,8 @@ void LightController::handleAnimating(int currentTimeMs) {
 }
 
 void LightController::scheduleNextEvent(int currentTimeMs, int multiplier) {
-  std::poisson_distribution<int> distribution(10);
+  int nextRandom = randomGenerator->getNextPoisson(10) * 200;
 
-  double timeFromNowMs = distribution(*generator) * multiplier;
+  double timeFromNowMs = nextRandom * multiplier;
   nextEventTimeMs = currentTimeMs + timeFromNowMs;
 }
