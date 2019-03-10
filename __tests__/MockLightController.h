@@ -1,7 +1,7 @@
 #ifndef MOCK_LIGHT_CONTROLLER_H
 #define MOCK_LIGHT_CONTROLLER_H
 
-#include "../src/AbstractLightController.hpp"
+#include "../src/AbstractLightController.h"
 
 class MockLightController : public AbstractLightController {
 public:
@@ -10,6 +10,7 @@ public:
   virtual void setAnimating();
   virtual void gradualOn(int transitionTimeSeconds);
   virtual void gradualOff(int transitionTimeSeconds);
+  virtual void clockTick(int currentTimeMs);
 
   bool receivedSetOn = false;
   bool receivedSetOff = false;

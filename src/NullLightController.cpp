@@ -1,4 +1,4 @@
-#include "NullLightController.hpp"
+#include "NullLightController.h"
 
 void NullLightController::setOn() {}
 void NullLightController::setOff() {}

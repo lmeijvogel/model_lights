@@ -1,8 +1,8 @@
 #ifndef LIGHT_COLLECTION_CONTROLLER_H
 #define LIGHT_COLLECTION_CONTROLLER_H
 
-#include "AbstractLightController.hpp"
-#include "LightController.hpp"
+#include "AbstractLightController.h"
+#include "LightController.h"
 
 typedef LightController* LightControllerPtr;
 

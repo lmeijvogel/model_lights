@@ -1,4 +1,4 @@
-#include "GuiLight.hpp"
+#include "GuiLight.h"
 
 void GuiLight::turnOn() {
   this->isOn = true;

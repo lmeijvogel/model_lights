@@ -1,15 +1,13 @@
-#include "../src/Light.hpp"
-
 // the setup function runs once when you press reset or power the board
-#include "AbstractLightController.hpp"
-#include "GuiLight.hpp"
-#include "LightCollectionController.hpp"
-#include "LightController.hpp"
-#include "Light.hpp"
-#include "LedLight.hpp"
-#include "NullLightController.hpp"
-#include "StateMachine.hpp"
-#include "RandomGenerator.hpp"
+#include "../src/AbstractLightController.h"
+#include "../src/GuiLight.h"
+#include "../src/LightCollectionController.h"
+#include "../src/LightController.h"
+#include "../src/Light.h"
+#include "../src/LedLight.h"
+#include "../src/NullLightController.h"
+#include "../src/StateMachine.h"
+#include "../src/RandomGenerator.h"
 
 typedef LightController* LightControllerPtr;
 typedef LedLight* LedLightPtr;

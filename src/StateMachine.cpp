@@ -1,4 +1,4 @@
-#include "StateMachine.hpp"
+#include "StateMachine.h"
 
 StateMachine::StateMachine(AbstractLightController *lightController) {
   this->_state = StateOff;

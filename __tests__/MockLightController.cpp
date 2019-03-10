@@ -1,4 +1,4 @@
-#include "MockLightController.hpp"
+#include "MockLightController.h"
 
 void MockLightController::setOn() {
     this->receivedSetOn = true;

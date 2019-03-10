@@ -1,6 +1,6 @@
-#include "LightCollectionController.hpp"
-#include "LightController.hpp"
-#include "Light.hpp"
+#include "LightCollectionController.h"
+#include "LightController.h"
+#include "Light.h"
 
 typedef LightController* LightControllerPtr;
 

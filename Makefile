@@ -25,7 +25,7 @@ obj:
 obj/catch.o:  __tests__/suite.cpp
 	$(CXX) __tests__/suite.cpp -c -o $@ $(CXXFLAGS)
 
-obj/MockLightController.o: __tests__/MockLightController.cpp __tests__/MockLightController.hpp
+obj/MockLightController.o: __tests__/MockLightController.cpp __tests__/MockLightController.h
 	$(CXX) __tests__/MockLightController.cpp -c -o $@ $(CXXFLAGS)
 
 obj/StateMachineTests.o: __tests__/StateMachineTests.cpp
@@ -37,19 +37,19 @@ obj/LightControllerTests.o: __tests__/LightControllerTests.cpp
 obj/LightCollectionControllerTests.o: __tests__/LightCollectionControllerTests.cpp
 	$(CXX) __tests__/LightCollectionControllerTests.cpp -c -o $@ $(CXXFLAGS)
 
-obj/LightCollectionController.o: src/LightCollectionController.hpp src/LightCollectionController.cpp src/AbstractLightController.hpp src/Light.hpp
+obj/LightCollectionController.o: src/LightCollectionController.h src/LightCollectionController.cpp src/AbstractLightController.h src/Light.h
 	$(CXX) src/LightCollectionController.cpp -c -o $@ $(CXXFLAGS)
 
-obj/StateMachine.o: src/StateMachine.hpp src/StateMachine.cpp src/AbstractLightController.hpp
+obj/StateMachine.o: src/StateMachine.h src/StateMachine.cpp src/AbstractLightController.h
 	$(CXX) src/StateMachine.cpp -c -o $@ $(CXXFLAGS)
 
-obj/LightController.o: src/LightController.hpp src/LightController.cpp src/AbstractLightController.hpp
+obj/LightController.o: src/LightController.h src/LightController.cpp src/AbstractLightController.h
 	$(CXX) src/LightController.cpp -c -o $@ $(CXXFLAGS)
 
-obj/GuiLight.o: src/GuiLight.hpp src/GuiLight.cpp src/Light.hpp
+obj/GuiLight.o: src/GuiLight.h src/GuiLight.cpp src/Light.h
 	$(CXX) src/GuiLight.cpp -c -o $@ $(CXXFLAGS)
 
-obj/NullLightController.o: src/NullLightController.cpp src/AbstractLightController.hpp
+obj/NullLightController.o: src/NullLightController.cpp src/AbstractLightController.h
 	$(CXX) src/NullLightController.cpp -c -o $@ $(CXXFLAGS)
 
 obj/RandomGenerator.o: src/RandomGenerator.cpp

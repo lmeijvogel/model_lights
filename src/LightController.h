@@ -1,9 +1,9 @@
 #ifndef LIGHT_CONTROLLER_H
 #define LIGHT_CONTROLLER_H
 
-#include "AbstractLightController.hpp"
-#include "Light.hpp"
-#include "RandomGenerator.hpp"
+#include "AbstractLightController.h"
+#include "Light.h"
+#include "RandomGenerator.h"
 
 class LightController : public AbstractLightController {
 public:

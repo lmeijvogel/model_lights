@@ -1,7 +1,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "RandomGenerator.hpp"
+#include "RandomGenerator.h"
 
 RandomGenerator::RandomGenerator(int seed) {
   srand(seed);

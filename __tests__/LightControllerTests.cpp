@@ -1,6 +1,6 @@
 #include "catch.hpp"
-#include "../src/LightController.hpp"
-#include "../src/Light.hpp"
+#include "../src/LightController.h"
+#include "../src/Light.h"
 
 class MockLight : public Light {
 public:

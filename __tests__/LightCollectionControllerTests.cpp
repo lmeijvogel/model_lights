@@ -1,8 +1,8 @@
 #include "catch.hpp"
-#include "../src/LightCollectionController.hpp"
-#include "../src/LightController.hpp"
+#include "../src/LightCollectionController.h"
+#include "../src/LightController.h"
 
-#include "MockLightController.hpp"
+#include "MockLightController.h"
 
 typedef MockLightController* MockLightControllerPtr;
 

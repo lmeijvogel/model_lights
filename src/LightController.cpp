@@ -1,4 +1,4 @@
-#include "LightController.hpp"
+#include "LightController.h"
 
 const int ON_TIME_DURATION = 1200;
 const int OFF_TIME_DURATION = 60;

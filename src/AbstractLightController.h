@@ -1,5 +1,5 @@
-#ifndef ABSTRACT_LIGHTS_DRIVER_H
-#define ABSTRACT_LIGHTS_DRIVER_H
+#ifndef ABSTRACT_LIGHT_CONTROLLER_H
+#define ABSTRACT_LIGHT_CONTROLLER_H
 
 enum LightsState {
                   LightsStateUnknown,

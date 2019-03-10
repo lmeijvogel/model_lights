@@ -1,8 +1,8 @@
 #include "catch.hpp"
-#include "../src/StateMachine.hpp"
-#include "../src/AbstractLightController.hpp"
+#include "../src/StateMachine.h"
+#include "../src/AbstractLightController.h"
 
-#include "MockLightController.hpp"
+#include "MockLightController.h"
 
 const int TRANSITION_UNTIL_MS=60;
 
