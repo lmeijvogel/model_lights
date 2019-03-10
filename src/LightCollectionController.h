@@ -14,10 +14,10 @@ public:
   virtual void setOn();
   virtual void setOff();
   virtual void setAnimating();
-  virtual void gradualOn(int transitionUntilMs);
-  virtual void gradualOff(int transitionUntilMs);
+  virtual void gradualOn(unsigned long transitionUntilMs);
+  virtual void gradualOff(unsigned long transitionUntilMs);
 
-  virtual void clockTick(int currentTimeMs);
+  virtual void clockTick(unsigned long currentTimeMs);
 
 private:
   LightControllerPtr *lightControllers;

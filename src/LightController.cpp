@@ -25,21 +25,21 @@ void LightController::setAnimating() {
   this->isAnimating = true;
 }
 
-void LightController::gradualOn(int transitionUntilMs) {
+void LightController::gradualOn(unsigned long transitionUntilMs) {
   this->isAnimating = false;
 }
 
-void LightController::gradualOff(int transitionUntilMs) {
+void LightController::gradualOff(unsigned long transitionUntilMs) {
   this->isAnimating = false;
 }
 
-void LightController::clockTick(int currentTimeMs) {
+void LightController::clockTick(unsigned long currentTimeMs) {
   if (this->isAnimating) {
     handleAnimating(currentTimeMs);
   }
 }
 
-void LightController::handleAnimating(int currentTimeMs) {
+void LightController::handleAnimating(unsigned long currentTimeMs) {
   if (nextEventTimeMs == 0) {
     if (lightIsOn) {
       scheduleNextEvent(currentTimeMs, ON_TIME_DURATION);
@@ -63,8 +63,8 @@ void LightController::handleAnimating(int currentTimeMs) {
   }
 }
 
-void LightController::scheduleNextEvent(int currentTimeMs, int multiplier) {
-  int nextRandom = randomGenerator->getNextPoisson(10) * 200;
+void LightController::scheduleNextEvent(unsigned long currentTimeMs, unsigned long multiplier) {
+  unsigned long nextRandom = randomGenerator->getNextPoisson(10) * 200;
 
   double timeFromNowMs = nextRandom * multiplier;
   nextEventTimeMs = currentTimeMs + timeFromNowMs;

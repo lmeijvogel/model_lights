@@ -11,9 +11,9 @@ public:
   virtual void setOn();
   virtual void setOff();
   virtual void setAnimating();
-  virtual void gradualOn(int transitionUntilMs);
-  virtual void gradualOff(int transitionUntilMs);
-  virtual void clockTick(int currentTimeMs);
+  virtual void gradualOn(unsigned long transitionUntilMs);
+  virtual void gradualOff(unsigned long transitionUntilMs);
+  virtual void clockTick(unsigned long currentTimeMs);
 
 private:
   Light *pLight;
@@ -21,10 +21,10 @@ private:
 
   bool lightIsOn = false;
   bool isAnimating = false;
-  int nextEventTimeMs = 0;
+  unsigned long nextEventTimeMs = 0;
 
-  void handleAnimating(int currentTimeMs);
+  void handleAnimating(unsigned long currentTimeMs);
 
-  void scheduleNextEvent(int currentTimeMs, int multiplier);
+  void scheduleNextEvent(unsigned long currentTimeMs, unsigned long multiplier);
 };
 #endif
