@@ -1,37 +1,64 @@
-/*
-  Blink
-
-  Turns an LED on for one second, then off for one second, repeatedly.
-
-  Most Arduinos have an on-board LED you can control. On the UNO, MEGA and ZERO
-  it is attached to digital pin 13, on MKR1000 on pin 6. LED_BUILTIN is set to
-  the correct LED pin independent of which board is used.
-  If you want to know what pin the on-board LED is connected to on your Arduino
-  model, check the Technical Specs of your board at:
-  https://www.arduino.cc/en/Main/Products
-
-  modified 8 May 2014
-  by Scott Fitzgerald
-  modified 2 Sep 2016
-  by Arturo Guadalupi
-  modified 8 Sep 2016
-  by Colby Newman
-
-  This example code is in the public domain.
-
-  http://www.arduino.cc/en/Tutorial/Blink
-*/
+#include "../src/Light.hpp"
 
 // the setup function runs once when you press reset or power the board
+#include "AbstractLightController.hpp"
+#include "GuiLight.hpp"
+#include "LightCollectionController.hpp"
+#include "LightController.hpp"
+#include "Light.hpp"
+#include "LedLight.hpp"
+#include "NullLightController.hpp"
+#include "StateMachine.hpp"
+#include "RandomGenerator.hpp"
+
+typedef LightController* LightControllerPtr;
+typedef LedLight* LedLightPtr;
+
+const int NUMBER_OF_LIGHTS = 1;
+
+int startTime;
+
+LightControllerPtr *createLightControllers(LedLightPtr *lights, int count, RandomGenerator *randomGenerator);
+
+LightCollectionController *lightCollectionController;
+StateMachine *stateMachine;
+
 void setup() {
-  // initialize digital pin LED_BUILTIN as an output.
-  pinMode(LED_BUILTIN, OUTPUT);
+  startTime = millis();
+
+  RandomGenerator randomGenerator(startTime);
+
+  LedLightPtr *lights[NUMBER_OF_LIGHTS];
+
+  LedLightPtr light = new LedLight(LED_BUILTIN);
+
+  lights[0] = &light;
+
+  LightControllerPtr *lightControllers = createLightControllers(*lights, NUMBER_OF_LIGHTS, &randomGenerator);
+
+  lightCollectionController = new LightCollectionController(lightControllers, NUMBER_OF_LIGHTS);
+
+  stateMachine = new StateMachine(lightCollectionController);
 }
 
 // the loop function runs over and over again forever
 void loop() {
-  digitalWrite(LED_BUILTIN, LOW);   // turn the LED on (HIGH is the voltage level)
-  delay(100);                       // wait for a second
-  digitalWrite(LED_BUILTIN, HIGH);    // turn the LED off by making the voltage LOW
-  delay(900);                       // wait for a second
+  auto now = millis();
+
+  int elapsedTimeMs = now - startTime;
+
+  stateMachine->clockTick(elapsedTimeMs);
+
+  lightCollectionController->clockTick(elapsedTimeMs);
+}
+
+LightControllerPtr *createLightControllers(LedLightPtr *lights, int count, RandomGenerator *randomGenerator) {
+  LightControllerPtr *lightControllers = new LightControllerPtr[count];
+
+  for (int i = 0 ; i < count ; i++) {
+    LightController *lightController = new LightController(lights[i], randomGenerator);
+    lightControllers[i] = lightController;
+  }
+
+  return lightControllers;
 }
