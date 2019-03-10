@@ -8,9 +8,9 @@ public:
   virtual void setOn();
   virtual void setOff();
   virtual void setAnimating();
-  virtual void gradualOn(int transitionTimeSeconds);
-  virtual void gradualOff(int transitionTimeSeconds);
-  virtual void clockTick(int currentTimeMs);
+  virtual void gradualOn(unsigned long transitionTimeSeconds);
+  virtual void gradualOff(unsigned long transitionTimeSeconds);
+  virtual void clockTick(unsigned long currentTimeMs);
 
   bool receivedSetOn = false;
   bool receivedSetOff = false;
