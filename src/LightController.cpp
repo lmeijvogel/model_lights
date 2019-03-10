@@ -1,10 +1,11 @@
 #include "LightController.h"
 
-const int ON_TIME_DURATION = 1200;
-const int OFF_TIME_DURATION = 60;
-LightController::LightController(Light *pLight, RandomGenerator *randomGenerator) {
+LightController::LightController(Light *pLight, RandomGenerator *randomGenerator, int onTimeDuration, int offTimeDuration) {
   this->pLight = pLight;
   this->randomGenerator = randomGenerator;
+
+  this->onTimeDuration = onTimeDuration;
+  this->offTimeDuration = offTimeDuration;
 }
 
 void LightController::setOn() {
@@ -42,9 +43,9 @@ void LightController::clockTick(unsigned long currentTimeMs) {
 void LightController::handleAnimating(unsigned long currentTimeMs) {
   if (nextEventTimeMs == 0) {
     if (lightIsOn) {
-      scheduleNextEvent(currentTimeMs, ON_TIME_DURATION);
+      scheduleNextEvent(currentTimeMs, onTimeDuration);
     } else {
-      scheduleNextEvent(currentTimeMs, OFF_TIME_DURATION);
+      scheduleNextEvent(currentTimeMs, offTimeDuration);
     }
   } else {
     if (nextEventTimeMs < currentTimeMs) {

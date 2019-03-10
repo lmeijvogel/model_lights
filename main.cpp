@@ -13,6 +13,9 @@
 const int NUMBER_OF_LIGHTS = 50;
 const int GRADUAL_TRANSITION_PERIOD_MS = 1*1000;
 
+const int ON_TIME_DURATION = 60;
+const int OFF_TIME_DURATION = 60;
+
 typedef LightController* LightControllerPtr;
 typedef GuiLight* GuiLightPtr;
 
@@ -108,7 +111,8 @@ LightControllerPtr *createLightControllers(GuiLightPtr *lights, int count, Rando
   LightControllerPtr *lightControllers = new LightControllerPtr[count];
 
   for (int i = 0 ; i < count ; i++) {
-    LightController *lightController = new LightController(lights[i], randomGenerator);
+    LightController *lightController = new LightController(lights[i], randomGenerator, ON_TIME_DURATION, OFF_TIME_DURATION);
+
     lightControllers[i] = lightController;
   }
 
