@@ -14,8 +14,8 @@
 BOARD_TAG    = mega2560
 ARDUINO_PORT = /dev/ttyACM0
 CXXFLAGS_STD = -std=c++11 -Wall -pedantic
-USER_LIB_PATH := $(realpath ../src)
 include ./Arduino-Makefile/Arduino.mk
+
 
 # --- mega2560 ide 1.6
 #BOARD_TAG    = mega

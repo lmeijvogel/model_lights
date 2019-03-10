@@ -6,12 +6,21 @@ TEST_FILES_O = obj/MockLightController.o obj/StateMachineTests.o obj/LightCollec
 
 default: bin bin/main
 
-bin/main: src/main.cpp $(APP_FILES_O)
-	$(CXX) src/main.cpp $(APP_FILES_O) $(CXXFLAGS) -lncurses -o $@
+arduino:
+	$(MAKE) -C src
+
+upload:
+	$(MAKE) -C src upload
+
+all: default arduino
+
+bin/main: main.cpp $(APP_FILES_O)
+	$(CXX) main.cpp $(APP_FILES_O) $(CXXFLAGS) -lncurses -o $@
 
 clean:
-	rm -r bin
+	rm -rf bin
 	rm -f $(APP_FILES_O) $(TEST_FILES_O)
+	$(MAKE) -C src clean
 
 purge: clean
 	rm -rf obj

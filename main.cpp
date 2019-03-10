@@ -4,11 +4,11 @@
 #include <chrono>
 #include <ncurses.h>
 
-#include "StateMachine.h"
-#include "LightCollectionController.h"
-#include "LightController.h"
-#include "Light.h"
-#include "GuiLight.h"
+#include "src/StateMachine.h"
+#include "src/LightCollectionController.h"
+#include "src/LightController.h"
+#include "src/Light.h"
+#include "src/GuiLight.h"
 
 const int NUMBER_OF_LIGHTS = 50;
 const int GRADUAL_TRANSITION_PERIOD_MS = 1*1000;
