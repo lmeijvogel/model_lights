@@ -12,12 +12,16 @@ LightController::LightController(Light *pLight, RandomGenerator *randomGenerator
 void LightController::setOn() {
   pLight->turnOn();
 
+  this->nextEventTimeMs = 0;
+
   this->lightIsOn = true;
   this->isAnimating = false;
 }
 
 void LightController::setOff() {
   pLight->turnOff();
+
+  this->nextEventTimeMs = 0;
 
   this->lightIsOn = false;
   this->isAnimating = false;
