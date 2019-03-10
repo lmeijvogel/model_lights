@@ -31,16 +31,16 @@ void LightCollectionController::setAnimating() {
   forEachLightController( pLightController->setAnimating());
 }
 
-void LightCollectionController::gradualOn(unsigned long transitionUntilMs) {
+void LightCollectionController::gradualOn(unsigned long currentTimeMs, unsigned long transitionTimeMs) {
   state = LightsTurningOn;
 
-  forEachLightController(pLightController->gradualOn(transitionUntilMs));
+  forEachLightController(pLightController->gradualOn(currentTimeMs, transitionTimeMs));
 }
 
-void LightCollectionController::gradualOff(unsigned long transitionUntilMs) {
+void LightCollectionController::gradualOff(unsigned long currentTimeMs, unsigned long transitionTimeMs) {
   state = LightsTurningOff;
 
-  forEachLightController(pLightController->gradualOff(transitionUntilMs));
+  forEachLightController(pLightController->gradualOff(currentTimeMs, transitionTimeMs));
 }
 
 void LightCollectionController::clockTick(unsigned long currentTimeMs) {

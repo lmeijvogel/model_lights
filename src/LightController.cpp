@@ -1,11 +1,12 @@
+#include <stdio.h>
 #include "LightController.h"
 
-LightController::LightController(Light *pLight, RandomGenerator *randomGenerator, int onTimeDuration, int offTimeDuration) {
+LightController::LightController(Light *pLight, RandomGenerator *randomGenerator, unsigned long onTimeDurationMs, unsigned long offTimeDurationMs) {
   this->pLight = pLight;
   this->randomGenerator = randomGenerator;
 
-  this->onTimeDuration = onTimeDuration;
-  this->offTimeDuration = offTimeDuration;
+  this->onTimeDurationMs = onTimeDurationMs;
+  this->offTimeDurationMs = offTimeDurationMs;
 }
 
 void LightController::setOn() {
@@ -24,49 +25,57 @@ void LightController::setOff() {
 
 void LightController::setAnimating() {
   this->isAnimating = true;
+
+  nextEventTimeMs = 0;
 }
 
-void LightController::gradualOn(unsigned long transitionUntilMs) {
+void LightController::gradualOn(unsigned long currentTimeMs, unsigned long transitionTimeMs) {
   this->isAnimating = false;
+  nextEventTimeMs = 0;
+
+  if (!lightIsOn) {
+    scheduleNextEvent(currentTimeMs, transitionTimeMs / 2);
+  }
 }
 
-void LightController::gradualOff(unsigned long transitionUntilMs) {
+void LightController::gradualOff(unsigned long currentTimeMs, unsigned long transitionTimeMs) {
   this->isAnimating = false;
+  nextEventTimeMs = 0;
+
+  if (lightIsOn) {
+    scheduleNextEvent(currentTimeMs, transitionTimeMs / 2);
+  }
 }
 
 void LightController::clockTick(unsigned long currentTimeMs) {
-  if (this->isAnimating) {
-    handleAnimating(currentTimeMs);
-  }
-}
-
-void LightController::handleAnimating(unsigned long currentTimeMs) {
-  if (nextEventTimeMs == 0) {
+  if (this->isAnimating && nextEventTimeMs == 0) {
     if (lightIsOn) {
-      scheduleNextEvent(currentTimeMs, onTimeDuration);
+      scheduleNextEvent(currentTimeMs, onTimeDurationMs);
     } else {
-      scheduleNextEvent(currentTimeMs, offTimeDuration);
+      scheduleNextEvent(currentTimeMs, offTimeDurationMs);
     }
-  } else {
-    if (nextEventTimeMs < currentTimeMs) {
-      if (lightIsOn) {
-        pLight->turnOff();
+  }
 
-        lightIsOn = false;
-      } else {
-        pLight->turnOn();
+  if ((nextEventTimeMs != 0) && (nextEventTimeMs < currentTimeMs)) {
+    if (lightIsOn) {
+      pLight->turnOff();
 
-        lightIsOn = true;
-      }
+      lightIsOn = false;
+    } else {
+      pLight->turnOn();
 
-      nextEventTimeMs = 0;
+      lightIsOn = true;
     }
+
+    nextEventTimeMs = 0;
   }
 }
 
-void LightController::scheduleNextEvent(unsigned long currentTimeMs, unsigned long multiplier) {
-  unsigned long nextRandom = randomGenerator->getNextPoisson(10) * 200;
+void LightController::scheduleNextEvent(unsigned long currentTimeMs, unsigned long meanDurationMs) {
+  // Get a factor with which to multiply the mean duration
+  double factor = randomGenerator->getNextPoisson(10) * 10.0;
 
-  double timeFromNowMs = nextRandom * multiplier;
+  double timeFromNowMs = factor * meanDurationMs;
+
   nextEventTimeMs = currentTimeMs + timeFromNowMs;
 }

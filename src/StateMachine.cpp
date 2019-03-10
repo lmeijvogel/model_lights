@@ -19,19 +19,20 @@ void StateMachine::switchOff() {
   this->lightController->setOff();
 }
 
-void StateMachine::switchGradual(int transitionUntilMs) {
-  this->transitionUntilMs = transitionUntilMs;
+void StateMachine::switchGradual(unsigned long currentTimeMs, unsigned long transitionTimeMs) {
+  this->transitionUntilMs = currentTimeMs + transitionTimeMs;
+
   switch(this->_state) {
   case StateTurningOff:
   case StateOff:
     this->_state = StateTurningOn;
-    this->lightController->gradualOn(transitionUntilMs);
+    this->lightController->gradualOn(currentTimeMs, transitionTimeMs);
     break;
   case StateTurningOn:
   case StateOn:
   case StateAnimating:
     this->_state = StateTurningOff;
-    this->lightController->gradualOff(transitionUntilMs);
+    this->lightController->gradualOff(currentTimeMs, transitionTimeMs);
     break;
   default:
     // Do nothing
@@ -39,7 +40,7 @@ void StateMachine::switchGradual(int transitionUntilMs) {
   }
 }
 
-void StateMachine::clockTick(int currentTimeMs) {
+void StateMachine::clockTick(unsigned long currentTimeMs) {
   if (_state != StateTurningOn && _state != StateTurningOff) {
     return;
   }

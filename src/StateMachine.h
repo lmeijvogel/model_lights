@@ -19,15 +19,16 @@ public:
 
   void switchOff();
   void switchOn();
-  void switchGradual(int transitionUntilMs);
 
-  void clockTick(int currentTimeMs);
+  void switchGradual(unsigned long currentTimeMs, unsigned long transitionTimeMs);
+
+  void clockTick(unsigned long currentTimeMs);
 
   void _switchAnimatingForTest();
 
 private:
   State _state;
   AbstractLightController *lightController;
-  int transitionUntilMs;
+  unsigned long transitionUntilMs;
 };
 #endif

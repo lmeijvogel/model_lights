@@ -14,8 +14,8 @@ public:
   virtual void setOn() = 0;
   virtual void setOff() = 0;
   virtual void setAnimating() = 0;
-  virtual void gradualOn(unsigned long transitionUntilMs) = 0;
-  virtual void gradualOff(unsigned long transitionUntilMs) = 0;
+  virtual void gradualOn(unsigned long currentTimeMs, unsigned long transitionTimeMs) = 0;
+  virtual void gradualOff(unsigned long currentTimeMs, unsigned long transitionTimeMs) = 0;
 
   virtual void clockTick(unsigned long currentTimeMs) = 0;
 };

@@ -13,8 +13,8 @@
 const int NUMBER_OF_LIGHTS = 50;
 const int GRADUAL_TRANSITION_PERIOD_MS = 1*1000;
 
-const int ON_TIME_DURATION = 60;
-const int OFF_TIME_DURATION = 60;
+const int ON_TIME_DURATION = 60*1000;
+const int OFF_TIME_DURATION = 60*1000;
 
 typedef LightController* LightControllerPtr;
 typedef GuiLight* GuiLightPtr;
@@ -133,7 +133,7 @@ void handle_input(int ch, StateMachine &stateMachine, int elapsedTimeMs) {
     stateMachine.switchOff();
     break;
   case 'x':
-    stateMachine.switchGradual(elapsedTimeMs + GRADUAL_TRANSITION_PERIOD_MS);
+    stateMachine.switchGradual(elapsedTimeMs, GRADUAL_TRANSITION_PERIOD_MS);
     break;
   case 'c':
     stateMachine.switchOn();
