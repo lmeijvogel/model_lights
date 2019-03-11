@@ -37,25 +37,23 @@ void setup() {
   lightCollectionController = new LightCollectionController(lightControllers, NUMBER_OF_LIGHTS);
 
   stateMachine = new StateMachine(lightCollectionController);
-  stateMachine->switchGradual(1000);
+  stateMachine->switchGradual(startTime, 1000);
 }
 
 // the loop function runs over and over again forever
 void loop() {
   unsigned long now = millis();
 
-  unsigned long elapsedTimeMs = now - startTime;
+  stateMachine->clockTick(now);
 
-  stateMachine->clockTick(elapsedTimeMs);
-
-  lightCollectionController->clockTick(elapsedTimeMs);
+  lightCollectionController->clockTick(now);
 }
 
 LightControllerPtr *createLightControllers(LedLightPtr *lights, int count, RandomGenerator *randomGenerator) {
   LightControllerPtr *lightControllers = new LightControllerPtr[count];
 
   for (int i = 0 ; i < count ; i++) {
-    LightController *lightController = new LightController(lights[i], randomGenerator);
+    LightController *lightController = new LightController(lights[i], randomGenerator, 5000, 5000);
     lightControllers[i] = lightController;
   }
 
