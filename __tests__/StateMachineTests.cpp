@@ -44,7 +44,7 @@ TEST_CASE("From Off, switches to TurningOn", "[StateMachine]")
   MockLightController lightController;
   StateMachine stateMachine(&lightController);
 
-  stateMachine.switchGradual(TRANSITION_UNTIL_MS);
+  stateMachine.switchGradual(0, TRANSITION_UNTIL_MS);
 
   REQUIRE(stateMachine.getState() == StateTurningOn);
   REQUIRE(lightController.receivedGradualOn == TRANSITION_UNTIL_MS);
@@ -56,7 +56,7 @@ TEST_CASE("From On, switches to TurningOff", "[StateMachine]")
   StateMachine stateMachine(&lightController);
 
   stateMachine.switchOn();
-  stateMachine.switchGradual(TRANSITION_UNTIL_MS);
+  stateMachine.switchGradual(0, TRANSITION_UNTIL_MS);
 
   REQUIRE(stateMachine.getState() == StateTurningOff);
   REQUIRE(lightController.receivedGradualOff == TRANSITION_UNTIL_MS);
@@ -67,11 +67,11 @@ TEST_CASE("From TurningOn, pressing switchGradual moves to TurningOff", "[StateM
   MockLightController lightController;
   StateMachine stateMachine(&lightController);
 
-  stateMachine.switchGradual(TRANSITION_UNTIL_MS);
+  stateMachine.switchGradual(0, TRANSITION_UNTIL_MS);
 
   REQUIRE(stateMachine.getState() == StateTurningOn);
 
-  stateMachine.switchGradual(TRANSITION_UNTIL_MS);
+  stateMachine.switchGradual(0, TRANSITION_UNTIL_MS);
 
   REQUIRE(stateMachine.getState() == StateTurningOff);
   REQUIRE(lightController.receivedGradualOff == TRANSITION_UNTIL_MS);
@@ -83,11 +83,11 @@ TEST_CASE("From TurningOff, pressing switchGradual moves to TurningOn", "[StateM
   StateMachine stateMachine(&lightController);
 
   stateMachine.switchOn();
-  stateMachine.switchGradual(TRANSITION_UNTIL_MS);
+  stateMachine.switchGradual(0, TRANSITION_UNTIL_MS);
 
   REQUIRE(stateMachine.getState() == StateTurningOff);
 
-  stateMachine.switchGradual(TRANSITION_UNTIL_MS);
+  stateMachine.switchGradual(0, TRANSITION_UNTIL_MS);
 
   REQUIRE(stateMachine.getState() == StateTurningOn);
 }
@@ -98,7 +98,7 @@ TEST_CASE("From Animating, switches to TurningOff", "[StateMachine]")
   StateMachine stateMachine(&lightController);
 
   stateMachine._switchAnimatingForTest();
-  stateMachine.switchGradual(TRANSITION_UNTIL_MS);
+  stateMachine.switchGradual(0, TRANSITION_UNTIL_MS);
 
   REQUIRE(stateMachine.getState() == StateTurningOff);
   REQUIRE(lightController.receivedGradualOff == TRANSITION_UNTIL_MS);
@@ -108,7 +108,7 @@ TEST_CASE("From TurningOn to Animating", "[StateMachine]") {
   MockLightController lightController;
   StateMachine stateMachine(&lightController);
 
-  stateMachine.switchGradual(TRANSITION_UNTIL_MS);
+  stateMachine.switchGradual(0, TRANSITION_UNTIL_MS);
 
   REQUIRE(stateMachine.getState() == StateTurningOn);
 
@@ -129,7 +129,7 @@ TEST_CASE("From TurningOff to Off", "[StateMachine]") {
   StateMachine stateMachine(&lightController);
 
   stateMachine.switchOn();
-  stateMachine.switchGradual(TRANSITION_UNTIL_MS);
+  stateMachine.switchGradual(0, TRANSITION_UNTIL_MS);
 
   REQUIRE(stateMachine.getState() == StateTurningOff);
 

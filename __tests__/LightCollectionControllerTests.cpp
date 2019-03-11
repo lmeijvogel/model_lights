@@ -55,7 +55,7 @@ TEST_CASE("LightCollectionController starts in state Unknown", "[LightCollection
   SECTION("LightCollectionController gradually turns on all lightControllers", "[LightCollectionController") {
     LightCollectionController lightCollectionController((LightController **)lightControllers, count);
 
-    lightCollectionController.gradualOn(TRANSITION_UNTIL_MS);
+    lightCollectionController.gradualOn(0, TRANSITION_UNTIL_MS);
 
     REQUIRE(lightCollectionController.getState() == LightsTurningOn);
 
@@ -69,7 +69,7 @@ TEST_CASE("LightCollectionController starts in state Unknown", "[LightCollection
   SECTION("LightCollectionController gradually turns off all lightControllers", "[LightCollectionController") {
     LightCollectionController lightCollectionController((LightController **)lightControllers, count);
 
-    lightCollectionController.gradualOff(TRANSITION_UNTIL_MS);
+    lightCollectionController.gradualOff(0, TRANSITION_UNTIL_MS);
 
     REQUIRE(lightCollectionController.getState() == LightsTurningOff);
 

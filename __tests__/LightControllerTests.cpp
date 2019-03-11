@@ -24,7 +24,7 @@ RandomGenerator randomGenerator(0);
 TEST_CASE("When it receives setOn(), turns on the light") {
   MockLight mockLight;
 
-  LightController lightController(&mockLight, &randomGenerator);
+  LightController lightController(&mockLight, &randomGenerator, 0, 0);
 
   lightController.setOn();
 
@@ -34,7 +34,7 @@ TEST_CASE("When it receives setOn(), turns on the light") {
 TEST_CASE("When it receives setOff(), turns off the light") {
   MockLight mockLight;
 
-  LightController lightController(&mockLight, &randomGenerator);
+  LightController lightController(&mockLight, &randomGenerator, 0, 0);
 
   lightController.setOn();
 
