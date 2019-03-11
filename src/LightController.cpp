@@ -10,49 +10,53 @@ LightController::LightController(Light *pLight, RandomGenerator *randomGenerator
 }
 
 void LightController::setOn() {
-  pLight->turnOn();
+  _turnOnLight();
+
+  this->state = LightControllerOn;
 
   this->nextEventTimeMs = 0;
-
-  this->lightIsOn = true;
-  this->isAnimating = false;
 }
 
 void LightController::setOff() {
-  pLight->turnOff();
+  _turnOffLight();
+
+  this->state = LightControllerOff;
 
   this->nextEventTimeMs = 0;
-
-  this->lightIsOn = false;
-  this->isAnimating = false;
 }
 
 void LightController::setAnimating() {
-  this->isAnimating = true;
+  this->state = LightControllerAnimating;
 
   nextEventTimeMs = 0;
 }
 
 void LightController::gradualOn(unsigned long currentTimeMs, unsigned long transitionTimeMs) {
-  this->isAnimating = false;
   nextEventTimeMs = 0;
 
   if (!lightIsOn) {
+    this->state = LightControllerTurningOn;
+
     scheduleNextEvent(currentTimeMs, transitionTimeMs / 2);
+  } else {
+    this->state = LightControllerOn;
   }
 }
 
 void LightController::gradualOff(unsigned long currentTimeMs, unsigned long transitionTimeMs) {
-  this->isAnimating = false;
   nextEventTimeMs = 0;
 
   if (lightIsOn) {
+    this->state = LightControllerTurningOff;
+
     scheduleNextEvent(currentTimeMs, transitionTimeMs / 2);
+  } else {
+    this->state = LightControllerOff;
   }
 }
 
 void LightController::clockTick(unsigned long currentTimeMs) {
-  if (this->isAnimating && nextEventTimeMs == 0) {
+  if (this->state == LightControllerAnimating && nextEventTimeMs == 0) {
     if (lightIsOn) {
       scheduleNextEvent(currentTimeMs, onTimeDurationMs);
     } else {
@@ -62,13 +66,9 @@ void LightController::clockTick(unsigned long currentTimeMs) {
 
   if ((nextEventTimeMs != 0) && (nextEventTimeMs < currentTimeMs)) {
     if (lightIsOn) {
-      pLight->turnOff();
-
-      lightIsOn = false;
+      _turnOffLight();
     } else {
-      pLight->turnOn();
-
-      lightIsOn = true;
+      _turnOnLight();
     }
 
     nextEventTimeMs = 0;
@@ -82,4 +82,24 @@ void LightController::scheduleNextEvent(unsigned long currentTimeMs, unsigned lo
   double timeFromNowMs = factor * meanDurationMs;
 
   nextEventTimeMs = currentTimeMs + timeFromNowMs;
+}
+
+void LightController::_turnOnLight() {
+  pLight->turnOn();
+
+  lightIsOn = true;
+
+  if (this->state == LightControllerTurningOn) {
+    this->state = LightControllerAnimating;
+  }
+}
+
+void LightController::_turnOffLight() {
+  pLight->turnOff();
+
+  lightIsOn = false;
+
+  if (this->state == LightControllerTurningOff) {
+    this->state = LightControllerOff;
+  }
 }

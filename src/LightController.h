@@ -5,6 +5,14 @@
 #include "Light.h"
 #include "RandomGenerator.h"
 
+enum LightControllerState {
+                           LightControllerOff,
+                           LightControllerTurningOn,
+                           LightControllerAnimating,
+                           LightControllerTurningOff,
+                           LightControllerOn,
+};
+
 class LightController : public AbstractLightController {
 public:
   LightController(Light *pLight, RandomGenerator *randomGenerator, unsigned long onTimeDurationMs, unsigned long offTimeDurationMs);
@@ -22,7 +30,7 @@ private:
   RandomGenerator *randomGenerator;
 
   bool lightIsOn = false;
-  bool isAnimating = false;
+  LightControllerState state;
 
   unsigned long onTimeDurationMs;
   unsigned long offTimeDurationMs;
@@ -32,5 +40,8 @@ private:
   void handleAnimating(unsigned long currentTimeMs);
 
   void scheduleNextEvent(unsigned long currentTimeMs, unsigned long meanDurationMs);
+
+  void _turnOnLight();
+  void _turnOffLight();
 };
 #endif
