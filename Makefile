@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -g -Wall -pedantic
+CXXFLAGS = -std=c++0x -g -Wall -pedantic
 
 APP_FILES_O = obj/StateMachine.o obj/NullLightController.o obj/LightCollectionController.o obj/LightController.o obj/GuiLight.o obj/RandomGenerator.o
 TEST_FILES_O = obj/MockLightController.o obj/StateMachineTests.o obj/LightCollectionControllerTests.o obj/LightControllerTests.o $(APP_FILES_O)
