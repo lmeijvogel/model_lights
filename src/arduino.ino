@@ -19,6 +19,7 @@ LedLightPtr *createLights(int *lightIds);
 
 void pollButtons(unsigned long currentTimeMs);
 void readButtons(StateMachine *stateMachine, unsigned long currentTimeMs);
+void showStatus(State state);
 
 LightCollectionController *lightCollectionController;
 StateMachine *stateMachine;
@@ -26,17 +27,11 @@ StateMachine *stateMachine;
 PhysicalButton *gradualButton;
 PhysicalButton *offButton;
 
-void status(bool value) {
-  if (value) {
-    digitalWrite(LED_BUILTIN, HIGH);
-  } else {
-    digitalWrite(LED_BUILTIN, LOW);
-  }
-}
+LedLight *statusLight;
 
 void setup() {
-  pinMode(LED_BUILTIN, OUTPUT);
-  status(false);
+  statusLight = new LedLight(LED_BUILTIN);
+
   startTime = millis();
 
   RandomGenerator randomGenerator(startTime);
@@ -72,6 +67,8 @@ void loop() {
 
   stateMachine->clockTick(now);
 
+  showStatus(stateMachine->getState());
+
   lightCollectionController->clockTick(now);
 }
 
@@ -106,9 +103,15 @@ void pollButtons(unsigned long currentTimeMs) {
 void readButtons(StateMachine *stateMachine, unsigned long currentTimeMs ) {
   if (offButton->isPressed()) {
     stateMachine->switchOff();
-    status(false);
   } else if (gradualButton->isPressed()) {
     stateMachine->switchGradual(currentTimeMs, 5000);
-    status(true);
+  }
+}
+
+void showStatus(State state) {
+  if (state == StateOff) {
+    statusLight->turnOff();
+  } else {
+    statusLight->turnOn();
   }
 }
