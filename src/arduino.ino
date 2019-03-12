@@ -1,11 +1,7 @@
 // the setup function runs once when you press reset or power the board
-#include "AbstractLightController.h"
-#include "GuiLight.h"
 #include "LightCollectionController.h"
 #include "LightController.h"
-#include "Light.h"
 #include "LedLight.h"
-#include "NullLightController.h"
 #include "StateMachine.h"
 #include "RandomGenerator.h"
 #include "PhysicalButton.h"
