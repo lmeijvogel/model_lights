@@ -1,8 +1,8 @@
 CXX = g++
 CXXFLAGS = -std=c++0x -g -Wall -pedantic
 
-APP_FILES_O = obj/StateMachine.o obj/LightCollectionController.o obj/LightController.o obj/GuiLight.o obj/RandomGenerator.o
-TEST_FILES_O = obj/MockLightController.o obj/StateMachineTests.o obj/LightCollectionControllerTests.o obj/LightControllerTests.o $(APP_FILES_O)
+APP_FILES_O = obj/CircularActivator.o obj/StateMachine.o obj/LightCollectionController.o obj/LightController.o obj/GuiLight.o obj/RandomGenerator.o
+TEST_FILES_O = obj/CircularActivatorTests.o obj/MockLightController.o obj/StateMachineTests.o obj/LightCollectionControllerTests.o obj/LightControllerTests.o $(APP_FILES_O)
 
 default: bin bin/main
 
@@ -37,6 +37,9 @@ obj/catch.o:  __tests__/suite.cpp
 obj/MockLightController.o: __tests__/MockLightController.cpp __tests__/MockLightController.h
 	$(CXX) __tests__/MockLightController.cpp -c -o $@ $(CXXFLAGS)
 
+obj/CircularActivatorTests.o: __tests__/CircularActivatorTests.cpp
+	$(CXX) __tests__/CircularActivatorTests.cpp -c -o $@ $(CXXFLAGS)
+
 obj/StateMachineTests.o: __tests__/StateMachineTests.cpp
 	$(CXX) __tests__/StateMachineTests.cpp -c -o $@ $(CXXFLAGS)
 
@@ -48,6 +51,9 @@ obj/LightCollectionControllerTests.o: __tests__/LightCollectionControllerTests.c
 
 obj/LightCollectionController.o: src/LightCollectionController.h src/LightCollectionController.cpp src/AbstractLightController.h src/Light.h
 	$(CXX) src/LightCollectionController.cpp -c -o $@ $(CXXFLAGS)
+
+obj/CircularActivator.o: src/CircularActivator.h src/CircularActivator.cpp src/AbstractLightController.h
+	$(CXX) src/CircularActivator.cpp -c -o $@ $(CXXFLAGS)
 
 obj/StateMachine.o: src/StateMachine.h src/StateMachine.cpp src/AbstractLightController.h
 	$(CXX) src/StateMachine.cpp -c -o $@ $(CXXFLAGS)
