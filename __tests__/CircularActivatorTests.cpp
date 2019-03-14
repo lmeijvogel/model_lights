@@ -163,6 +163,29 @@ TEST_CASE("Receding") {
   }
 }
 
+TEST_CASE("Changing direction") {
+  MockLightControllerPtr *createLightControllers();
+
+  MockLightControllerPtr *lightControllers = createLightControllers();
+  AbstractLightControllerPtr *abstractLightControllers = (AbstractLightControllerPtr *)lightControllers;
+
+  CircularActivator activator(abstractLightControllers, NUMBER_OF_LIGHTS, OVERFLOW_NUMBER);
+
+  SECTION("when changing direction, also reverse the action") {
+    activator.advance(3);
+
+    REQUIRE(lightControllers[0]->receivedSetOn);
+    REQUIRE(lightControllers[1]->receivedSetOn);
+    REQUIRE(lightControllers[2]->receivedSetOn);
+
+    activator.advance(-2);
+
+    REQUIRE(lightControllers[2]->receivedSetOff);
+    REQUIRE(lightControllers[1]->receivedSetOff);
+    REQUIRE(!lightControllers[0]->receivedSetOff);
+  }
+}
+
 MockLightControllerPtr *createLightControllers() {
   MockLightControllerPtr *result = new MockLightControllerPtr[NUMBER_OF_LIGHTS];
 

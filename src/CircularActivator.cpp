@@ -17,6 +17,13 @@ void CircularActivator::advance(int steps) {
   int remaining = steps > 0 ? steps : -steps;
   int delta = steps > 0 ? 1 : -1;
 
+  // If we're moving in the opposite direction, we want any lights that were turned on
+  // to be turned off again and vice versa
+  if (delta == -previousDelta) {
+    this->isActivating = !this->isActivating;
+    advancePointer(delta);
+  }
+
   if (!isStarted) {
     isStarted = true;
     if (delta == 1) {
