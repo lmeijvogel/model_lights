@@ -1,8 +1,10 @@
 #include "CircularActivator.h"
+#include "NullLightController.h"
 #include <stdio.h>
 
 CircularActivator::CircularActivator(AbstractLightControllerPtr *lightControllers, int numberOfLights, int overflowNumber) {
-  this->lightControllers = lightControllers;
+  createLightControllersWithOverflow(lightControllers, numberOfLights, overflowNumber);
+
   this->numberOfLights = numberOfLights;
   this->overflowNumber = overflowNumber;
   this->isActivating = true;
@@ -10,56 +12,42 @@ CircularActivator::CircularActivator(AbstractLightControllerPtr *lightController
 }
 
 void CircularActivator::advance(int steps) {
-  int remaining = steps > 0 ? steps : -steps;
+  int totalArraySize = numberOfLights + overflowNumber;
 
-  int delta;
-  if (steps > 0) {
-    delta = 1;
-  } else {
-    delta = -1;
-  }
+  int remaining = steps > 0 ? steps : -steps;
+  int delta = steps > 0 ? 1 : -1;
 
   if (!isStarted) {
     isStarted = true;
     if (delta == 1) {
-      currentLightIndex = 0;
+      currentLightIndex = overflowNumber;
     } else {
-      currentLightIndex = numberOfLights - 1;
+      currentLightIndex = totalArraySize - 1;
     }
   }
-
-  int overflowBoundary = overflowNumber - 1;
 
   while (remaining > 0) {
     remaining--;
 
-    bool inRange;
-    bool inOverflow;
+    toggleLight();
 
-    if (delta == 1) {
-      inRange = currentLightIndex < numberOfLights;
-      inOverflow = numberOfLights <= currentLightIndex && currentLightIndex < numberOfLights + overflowBoundary;
-    } else {
-      inRange = 0 <= currentLightIndex;
-      inOverflow = -overflowBoundary <= currentLightIndex && currentLightIndex < 0;
-    }
-
-    if (inRange) {
-      toggleLight();
-      currentLightIndex += delta;
-    } else if (inOverflow) {
-      currentLightIndex += delta;
-    } else {
-      if (delta == 1) {
-        currentLightIndex = 0;
-      } else {
-        currentLightIndex = numberOfLights - 1;
-      }
-      isActivating = !isActivating;
-
-      toggleLight();
-    }
+    advancePointer(delta);
   }
+
+  previousDelta = delta;
+}
+
+void CircularActivator::createLightControllersWithOverflow(AbstractLightControllerPtr *lightControllers, int numberOfLights, int overflowNumber) {
+  int totalSize = numberOfLights + overflowNumber;
+  this->lightControllers = new AbstractLightControllerPtr[totalSize];
+
+  for (int i = 0 ; i < overflowNumber ; i++) {
+    this->lightControllers[i] = new NullLightController();
+  }
+  for (int i = 0 ; i < numberOfLights ; i++) {
+    this->lightControllers[i+overflowNumber] = lightControllers[i];
+  }
+
 }
 
 void CircularActivator::toggleLight() {
@@ -68,4 +56,26 @@ void CircularActivator::toggleLight() {
   } else {
     lightControllers[currentLightIndex]->setOff();
   }
+}
+
+void CircularActivator::advancePointer(int delta) {
+  int totalArraySize = numberOfLights + overflowNumber;
+
+  currentLightIndex += delta;
+
+  if (currentLightIndex < 0) {
+    currentLightIndex = totalArraySize - 1;
+    isActivating = !isActivating;
+  } else if (currentLightIndex > totalArraySize - 1) {
+    currentLightIndex = 0;
+    isActivating = !isActivating;
+  }
+}
+
+int CircularActivator::getCurrentLightIndex() {
+  return currentLightIndex;
+}
+
+bool CircularActivator::getIsActivating() {
+  return isActivating;
 }

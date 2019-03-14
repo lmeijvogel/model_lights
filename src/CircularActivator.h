@@ -10,7 +10,13 @@ public:
   CircularActivator(AbstractLightControllerPtr *lightControllers, int numberOfLights, int overflowNumber);
 
   void advance(int count);
+
+  int getCurrentLightIndex();
+  bool getIsActivating();
+
 private:
+  void createLightControllersWithOverflow(AbstractLightControllerPtr *lightControllers, int numberOfLights, int overflowNumber);
+
   AbstractLightControllerPtr *lightControllers;
   int numberOfLights;
   int overflowNumber;
@@ -18,8 +24,10 @@ private:
   bool isStarted;
 
   int currentLightIndex = 0;
+  int previousDelta = 0;
 
   void toggleLight();
+  void advancePointer(int delta);
 };
 
 #endif
