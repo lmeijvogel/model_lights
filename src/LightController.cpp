@@ -49,10 +49,14 @@ void LightController::gradualOff(unsigned long currentTimeMs, unsigned long tran
   if (lightIsOn) {
     this->state = LightControllerTurningOff;
 
-    scheduleNextEvent(currentTimeMs, transitionTimeMs / 2);
+    scheduleNextEvent(currentTimeMs, transitionTimeMs / 3);
   } else {
     this->state = LightControllerOff;
   }
+}
+
+void LightController::cycle(int) {
+  // Do nothing
 }
 
 void LightController::clockTick(unsigned long currentTimeMs) {

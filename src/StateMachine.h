@@ -8,7 +8,7 @@ enum State {
              StateTurningOn,
              StateAnimating,
              StateOn,
-             StateTurningOff
+             StateTurningOff,
 };
 
 class StateMachine {

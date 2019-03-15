@@ -6,10 +6,12 @@
 #include <string.h>
 
 #include "src/StateMachine.h"
+#include "src/WheelStateMachine.h"
 #include "src/LightCollectionController.h"
 #include "src/LightController.h"
 #include "src/Light.h"
 #include "src/GuiLight.h"
+#include "src/CircularActivator.h"
 
 const int NUMBER_OF_LIGHTS = 50;
 const int GRADUAL_TRANSITION_PERIOD_MS = 10*1000;
@@ -25,12 +27,14 @@ typedef GuiLight* GuiLightPtr;
 GuiLightPtr *createLights();
 LightControllerPtr *createLightControllers(GuiLightPtr *lights, int count, RandomGenerator *randomGenerator);
 
+CircularActivator *circularActivator;
+
 void print_intro();
 
-void print_state(StateMachine &stateMachine);
+void print_state(StateMachine &stateMachine, WheelStateMachine &wheelStateMachine);
 void print_lights(GuiLightPtr *lights);
 
-void handle_input(int ch, StateMachine &stateMachine, int elapsedTimeMs);
+void handle_input(int ch, StateMachine &stateMachine, WheelStateMachine &wheelStateMachine, int elapsedTimeMs);
 int seconds_since_epoch();
 
 void cleanupAndExit() {
@@ -61,9 +65,11 @@ int main() {
 
   sigaction(SIGINT, &sigIntHandler, NULL);
 
-  LightCollectionController lightCollectionController(lightControllers, NUMBER_OF_LIGHTS);
+  circularActivator = new CircularActivator((AbstractLightControllerPtr *)lightControllers, NUMBER_OF_LIGHTS, 5);
+  LightCollectionController lightCollectionController(lightControllers, circularActivator, NUMBER_OF_LIGHTS);
 
   StateMachine stateMachine(&lightCollectionController);
+  WheelStateMachine wheelStateMachine(&lightCollectionController);
 
   initscr();
 
@@ -90,9 +96,9 @@ int main() {
       delete[] lights;
       cleanupAndExit();
     } else if (ch != ERR) {
-      handle_input(ch, stateMachine, elapsedTimeMs);
+      handle_input(ch, stateMachine, wheelStateMachine, elapsedTimeMs);
     }
-    print_state(stateMachine);
+    print_state(stateMachine, wheelStateMachine);
     print_lights(lights);
 
     refresh();
@@ -127,10 +133,17 @@ void print_intro() {
   printw("z: Turn off\n");
   printw("x: Gradual\n");
   printw("c: Turn on\n");
+  printw("\n");
+  printw("a: Start cycling\n");
+  printw("s: Cycle -2\n");
+  printw("d: Cycle -1\n");
+  printw("f: Cycle 1\n");
+  printw("g: Cycle 2\n");
+
   refresh();
 }
 
-void handle_input(int ch, StateMachine &stateMachine, int elapsedTimeMs) {
+void handle_input(int ch, StateMachine &stateMachine, WheelStateMachine &wheelStateMachine, int elapsedTimeMs) {
   switch(ch) {
   case 'z':
     stateMachine.switchOff();
@@ -141,10 +154,26 @@ void handle_input(int ch, StateMachine &stateMachine, int elapsedTimeMs) {
   case 'c':
     stateMachine.switchOn();
     break;
+  case 'a':
+    wheelStateMachine.wheelPressed();
+    break;
+  case 's':
+    wheelStateMachine.wheelTurned(-2);
+    break;
+  case 'd':
+    wheelStateMachine.wheelTurned(-1);
+    break;
+  case 'f':
+    wheelStateMachine.wheelTurned(1);
+    break;
+  case 'g':
+    wheelStateMachine.wheelTurned(2);
+    break;
+
   }
 }
 
-void print_state(StateMachine &stateMachine) {
+void print_state(StateMachine &stateMachine, WheelStateMachine &wheelStateMachine) {
   State state = stateMachine.getState();
 
   char description[60];
@@ -169,6 +198,24 @@ void print_state(StateMachine &stateMachine) {
   }
 
   mvprintw(headerSize + 2, 0, description);
+
+  switch (wheelStateMachine.getState()) {
+    case StateCycling:
+        sprintf(description,
+                "%s: %d %d",
+                "StateCycling",
+                circularActivator->getCurrentLightIndex(),
+                circularActivator->getIsActivating());
+        break;
+    case StateSpeed:
+        sprintf(description,
+                "%s",
+                "StateSpeed");
+        break;
+  }
+
+  mvprintw(headerSize + 4, 0, description);
+
   refresh();
 }
 

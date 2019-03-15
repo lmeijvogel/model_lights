@@ -12,19 +12,21 @@ TEST_CASE("LightCollectionController starts in state Unknown", "[LightCollection
   const int count = 10;
   MockLightControllerPtr *lightControllers = new MockLightControllerPtr[10];
 
+  CircularActivator circularActivator((AbstractLightControllerPtr *)lightControllers, 10, 5);
+
   for (int i = 0 ; i < 10 ; i++) {
     MockLightControllerPtr mockLightController = new MockLightController;
     lightControllers[i] = mockLightController;
   }
 
   SECTION("LightCollectionController starts in state Unknown", "[LightCollectionController]") {
-    LightCollectionController lightCollectionController((LightController **)lightControllers, count);
+    LightCollectionController lightCollectionController((LightController **)lightControllers, &circularActivator, count);
 
     REQUIRE(lightCollectionController.getState() == LightsStateUnknown);
   }
 
   SECTION("LightCollectionController turns off all lightControllers", "[LightCollectionController") {
-    LightCollectionController lightCollectionController((LightController **)lightControllers, count);
+    LightCollectionController lightCollectionController((LightController **)lightControllers, &circularActivator, count);
 
     lightCollectionController.setOn();
     lightCollectionController.setOff();
@@ -39,7 +41,7 @@ TEST_CASE("LightCollectionController starts in state Unknown", "[LightCollection
   }
 
   SECTION("LightCollectionController turns on all lightControllers", "[LightCollectionController") {
-    LightCollectionController lightCollectionController((LightController **)lightControllers, count);
+    LightCollectionController lightCollectionController((LightController **)lightControllers, &circularActivator, count);
 
     lightCollectionController.setOn();
 
@@ -53,7 +55,7 @@ TEST_CASE("LightCollectionController starts in state Unknown", "[LightCollection
   }
 
   SECTION("LightCollectionController gradually turns on all lightControllers", "[LightCollectionController") {
-    LightCollectionController lightCollectionController((LightController **)lightControllers, count);
+    LightCollectionController lightCollectionController((LightController **)lightControllers, &circularActivator, count);
 
     lightCollectionController.gradualOn(0, TRANSITION_UNTIL_MS);
 
@@ -67,7 +69,7 @@ TEST_CASE("LightCollectionController starts in state Unknown", "[LightCollection
   }
 
   SECTION("LightCollectionController gradually turns off all lightControllers", "[LightCollectionController") {
-    LightCollectionController lightCollectionController((LightController **)lightControllers, count);
+    LightCollectionController lightCollectionController((LightController **)lightControllers, &circularActivator, count);
 
     lightCollectionController.gradualOff(0, TRANSITION_UNTIL_MS);
 

@@ -6,9 +6,11 @@ typedef LightController* LightControllerPtr;
 
 #define forEachLightController(X) {for (int i = 0 ; i < count ; i++) { LightControllerPtr pLightController = lightControllers[i]; (X); }}
 
-LightCollectionController::LightCollectionController(LightControllerPtr lightControllers[], int count) {
+LightCollectionController::LightCollectionController(LightControllerPtr lightControllers[], CircularActivator *circularActivator, int count) {
   this->lightControllers = lightControllers;
   this->count = count;
+
+  this->circularActivator = circularActivator;
 }
 
 LightsState LightCollectionController::getState() {
@@ -41,6 +43,10 @@ void LightCollectionController::gradualOff(unsigned long currentTimeMs, unsigned
   state = LightsTurningOff;
 
   forEachLightController(pLightController->gradualOff(currentTimeMs, transitionTimeMs));
+}
+
+void LightCollectionController::cycle(int steps) {
+  this->circularActivator->advance(steps);
 }
 
 void LightCollectionController::clockTick(unsigned long currentTimeMs) {

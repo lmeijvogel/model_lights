@@ -10,6 +10,7 @@ public:
   virtual void setAnimating();
   virtual void gradualOn(unsigned long currentTimeMs, unsigned long transitionTimeMs);
   virtual void gradualOff(unsigned long currentTimeMs, unsigned long transitionTimeMs);
+  virtual void cycle(int steps);
 
   virtual void clockTick(unsigned long currentTimeMs);
 
@@ -18,5 +19,6 @@ public:
   bool receivedAnimating = false;
   int receivedGradualOn = 0;
   int receivedGradualOff = 0;
+  int receivedCycle = 0;
 };
 #endif

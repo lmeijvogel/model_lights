@@ -20,4 +20,8 @@ void MockLightController::gradualOff(unsigned long currentTimeMs, unsigned long 
   this->receivedGradualOff = transitionTimeMs;
 }
 
+void MockLightController::cycle(int steps) {
+  this->receivedCycle = steps;
+}
+
 void MockLightController::clockTick(unsigned long currentTimeMs) { }

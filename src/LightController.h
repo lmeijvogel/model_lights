@@ -22,6 +22,7 @@ public:
   virtual void setAnimating();
   virtual void gradualOn(unsigned long currentTimeMs, unsigned long transitionTimeMs);
   virtual void gradualOff(unsigned long currentTimeMs, unsigned long transitionTimeMs);
+  virtual void cycle(int);
 
   virtual void clockTick(unsigned long currentTimeMs);
 

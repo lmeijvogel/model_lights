@@ -1,8 +1,8 @@
 CXX = g++
 CXXFLAGS = -std=c++0x -g -Wall -pedantic
 
-APP_FILES_O = obj/CircularActivator.o obj/StateMachine.o obj/LightCollectionController.o obj/LightController.o obj/NullLightController.o obj/GuiLight.o obj/RandomGenerator.o
-TEST_FILES_O = obj/CircularActivatorTests.o obj/MockLightController.o obj/StateMachineTests.o obj/LightCollectionControllerTests.o obj/LightControllerTests.o $(APP_FILES_O)
+APP_FILES_O = obj/CircularActivator.o obj/StateMachine.o obj/WheelStateMachine.o obj/LightCollectionController.o obj/LightController.o obj/NullLightController.o obj/GuiLight.o obj/RandomGenerator.o
+TEST_FILES_O = obj/CircularActivatorTests.o obj/MockLightController.o obj/StateMachineTests.o obj/WheelStateMachineTests.o obj/LightCollectionControllerTests.o obj/LightControllerTests.o $(APP_FILES_O)
 
 default: bin bin/main
 
@@ -43,6 +43,9 @@ obj/CircularActivatorTests.o: __tests__/CircularActivatorTests.cpp
 obj/StateMachineTests.o: __tests__/StateMachineTests.cpp
 	$(CXX) __tests__/StateMachineTests.cpp -c -o $@ $(CXXFLAGS)
 
+obj/WheelStateMachineTests.o: __tests__/WheelStateMachineTests.cpp
+	$(CXX) __tests__/WheelStateMachineTests.cpp -c -o $@ $(CXXFLAGS)
+
 obj/LightControllerTests.o: __tests__/LightControllerTests.cpp
 	$(CXX) __tests__/LightControllerTests.cpp -c -o $@ $(CXXFLAGS)
 
@@ -57,6 +60,9 @@ obj/CircularActivator.o: src/CircularActivator.h src/CircularActivator.cpp src/A
 
 obj/StateMachine.o: src/StateMachine.h src/StateMachine.cpp src/AbstractLightController.h
 	$(CXX) src/StateMachine.cpp -c -o $@ $(CXXFLAGS)
+
+obj/WheelStateMachine.o: src/WheelStateMachine.h src/WheelStateMachine.cpp src/AbstractLightController.h
+	$(CXX) src/WheelStateMachine.cpp -c -o $@ $(CXXFLAGS)
 
 obj/LightController.o: src/LightController.h src/LightController.cpp src/AbstractLightController.h
 	$(CXX) src/LightController.cpp -c -o $@ $(CXXFLAGS)

@@ -144,5 +144,3 @@ TEST_CASE("From TurningOff to Off", "[StateMachine]") {
   REQUIRE(stateMachine.getState() == StateOff);
   REQUIRE(lightController.receivedSetOff == true);
 }
-
-// GradualOff -> auto Off
