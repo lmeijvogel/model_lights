@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <chrono>
 #include <ncurses.h>
+#include <string.h>
 
 #include "src/StateMachine.h"
 #include "src/LightCollectionController.h"
@@ -15,6 +16,8 @@ const int GRADUAL_TRANSITION_PERIOD_MS = 10*1000;
 
 const int ON_TIME_DURATION = 60*1000;
 const int OFF_TIME_DURATION = 60*1000;
+
+const int headerSize = 10;
 
 typedef LightController* LightControllerPtr;
 typedef GuiLight* GuiLightPtr;
@@ -144,24 +147,28 @@ void handle_input(int ch, StateMachine &stateMachine, int elapsedTimeMs) {
 void print_state(StateMachine &stateMachine) {
   State state = stateMachine.getState();
 
+  char description[60];
+
   switch (state) {
   case StateOff:
-    mvprintw(6, 0, "StateOff        ");
+    strcpy(description, "StateOff");
+
     break;
   case StateTurningOn:
-    mvprintw(6, 0, "StateTurningOn  ");
+    strcpy(description, "StateTurningOn");
     break;
   case StateAnimating:
-    mvprintw(6, 0, "StateAnimating  ");
+    strcpy(description, "StateAnimating");
     break;
   case StateOn:
-    mvprintw(6, 0, "StateOn        ");
+    strcpy(description, "StateOn");
     break;
   case StateTurningOff:
-    mvprintw(6, 0, "StateTurningOff");
+    strcpy(description, "StateTurningOff");
     break;
   }
 
+  mvprintw(headerSize + 2, 0, description);
   refresh();
 }
 
@@ -172,7 +179,7 @@ void print_lights(GuiLightPtr *lights) {
     int xPos = i * 2;
     const char *lightDisp = pLight->getState() ? "*" : ".";
 
-    mvprintw(10, 10+xPos, "%s", lightDisp);
+    mvprintw(headerSize + 6, 10+xPos, "%s", lightDisp);
   }
 }
 
