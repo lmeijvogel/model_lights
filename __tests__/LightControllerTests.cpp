@@ -44,3 +44,14 @@ TEST_CASE("When it receives setOff(), turns off the light") {
 
   REQUIRE(!mockLight.isOn);
 }
+
+TEST_CASE("When one of the LightControllers gradually switches, does not affect the others") {
+  MockLight mockLight;
+
+  LightController lightController1(&mockLight, &randomGenerator, 0, 0);
+  LightController lightController2(&mockLight, &randomGenerator, 0, 0);
+
+  lightController1.gradualOn(10, 10);
+
+  REQUIRE(lightController2._nextEventForTests().referenceTimestampMs == 0);
+}

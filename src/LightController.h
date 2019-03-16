@@ -10,12 +10,20 @@ enum LightControllerState {
                            LightControllerTurningOn,
                            LightControllerAnimating,
                            LightControllerTurningOff,
-                           LightControllerOn,
+                           LightControllerOn
+};
+
+struct LightControllerEvent {
+  LightControllerState state;
+  unsigned long referenceTimestampMs;
+  unsigned long periodAfterReferenceMs;
 };
 
 class LightController : public AbstractLightController {
 public:
   LightController(Light *pLight, RandomGenerator *randomGenerator, unsigned long onTimeDurationMs, unsigned long offTimeDurationMs);
+
+  virtual ~LightController();
 
   virtual void setOn();
   virtual void setOff();
@@ -26,6 +34,7 @@ public:
 
   virtual void clockTick(unsigned long currentTimeMs);
 
+  virtual LightControllerEvent _nextEventForTests();
 private:
   Light *pLight;
   RandomGenerator *randomGenerator;
@@ -36,11 +45,14 @@ private:
   unsigned long onTimeDurationMs;
   unsigned long offTimeDurationMs;
 
-  unsigned long nextEventTimeMs = 0;
+  LightControllerEvent *nextEvent;
 
   void handleAnimating(unsigned long currentTimeMs);
 
-  void scheduleNextEvent(unsigned long currentTimeMs, unsigned long meanDurationMs);
+  void scheduleNextEvent(LightControllerState state, unsigned long currentTimeMs, unsigned long meanDurationMs);
+
+  bool isNextEventScheduled();
+  void clearNextEvent();
 
   void _turnOnLight();
   void _turnOffLight();

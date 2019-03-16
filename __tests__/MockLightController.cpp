@@ -12,11 +12,11 @@ void MockLightController::setAnimating() {
   this->receivedAnimating = true;
 }
 
-void MockLightController::gradualOn(unsigned long currentTimeMs, unsigned long transitionTimeMs) {
+void MockLightController::gradualOn(unsigned long, unsigned long transitionTimeMs) {
   this->receivedGradualOn = transitionTimeMs;
 }
 
-void MockLightController::gradualOff(unsigned long currentTimeMs, unsigned long transitionTimeMs) {
+void MockLightController::gradualOff(unsigned long, unsigned long transitionTimeMs) {
   this->receivedGradualOff = transitionTimeMs;
 }
 

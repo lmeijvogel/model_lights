@@ -7,6 +7,15 @@ LightController::LightController(Light *pLight, RandomGenerator *randomGenerator
 
   this->onTimeDurationMs = onTimeDurationMs;
   this->offTimeDurationMs = offTimeDurationMs;
+
+  this->nextEvent = new LightControllerEvent;
+  this->nextEvent->state = LightControllerOff;
+  this->nextEvent->referenceTimestampMs = 0;
+  this->nextEvent->periodAfterReferenceMs = 0;
+}
+
+LightController::~LightController() {
+  delete this->nextEvent;
 }
 
 void LightController::setOn() {
@@ -14,7 +23,7 @@ void LightController::setOn() {
 
   this->state = LightControllerOn;
 
-  this->nextEventTimeMs = 0;
+  this->clearNextEvent();
 }
 
 void LightController::setOff() {
@@ -22,34 +31,34 @@ void LightController::setOff() {
 
   this->state = LightControllerOff;
 
-  this->nextEventTimeMs = 0;
+  this->clearNextEvent();
 }
 
 void LightController::setAnimating() {
   this->state = LightControllerAnimating;
 
-  nextEventTimeMs = 0;
+  clearNextEvent();
 }
 
 void LightController::gradualOn(unsigned long currentTimeMs, unsigned long transitionTimeMs) {
-  nextEventTimeMs = 0;
+  clearNextEvent();
 
   if (!lightIsOn) {
     this->state = LightControllerTurningOn;
 
-    scheduleNextEvent(currentTimeMs, transitionTimeMs / 2);
+    scheduleNextEvent(LightControllerOn, currentTimeMs, transitionTimeMs / 3);
   } else {
     this->state = LightControllerOn;
   }
 }
 
 void LightController::gradualOff(unsigned long currentTimeMs, unsigned long transitionTimeMs) {
-  nextEventTimeMs = 0;
+  clearNextEvent();
 
   if (lightIsOn) {
     this->state = LightControllerTurningOff;
 
-    scheduleNextEvent(currentTimeMs, transitionTimeMs / 3);
+    scheduleNextEvent(LightControllerOff, currentTimeMs, transitionTimeMs / 3);
   } else {
     this->state = LightControllerOff;
   }
@@ -60,32 +69,48 @@ void LightController::cycle(int) {
 }
 
 void LightController::clockTick(unsigned long currentTimeMs) {
-  if (this->state == LightControllerAnimating && nextEventTimeMs == 0) {
+  bool nextEventScheduled = isNextEventScheduled();
+
+  if (this->state == LightControllerAnimating && !nextEventScheduled) {
     if (lightIsOn) {
-      scheduleNextEvent(currentTimeMs, onTimeDurationMs);
+      scheduleNextEvent(LightControllerOff, currentTimeMs, onTimeDurationMs);
     } else {
-      scheduleNextEvent(currentTimeMs, offTimeDurationMs);
+      scheduleNextEvent(LightControllerOn, currentTimeMs, offTimeDurationMs);
     }
   }
 
-  if ((nextEventTimeMs != 0) && (nextEventTimeMs < currentTimeMs)) {
-    if (lightIsOn) {
-      _turnOffLight();
-    } else {
-      _turnOnLight();
-    }
+  if (nextEventScheduled) {
+    unsigned long nextEventTimeMs = nextEvent->referenceTimestampMs + nextEvent->periodAfterReferenceMs;
 
-    nextEventTimeMs = 0;
+    if (nextEventTimeMs < currentTimeMs) {
+      if (nextEvent->state == LightControllerOn) {
+        _turnOffLight();
+      } else if (nextEvent->state == LightControllerOff) {
+        _turnOnLight();
+      }
+
+      clearNextEvent();
+    }
   }
 }
 
-void LightController::scheduleNextEvent(unsigned long currentTimeMs, unsigned long meanDurationMs) {
+void LightController::scheduleNextEvent(LightControllerState state, unsigned long currentTimeMs, unsigned long meanDurationMs) {
   // Get a factor with which to multiply the mean duration
   double factor = randomGenerator->getNextPoisson(10) * 10.0;
 
-  double timeFromNowMs = factor * meanDurationMs;
+  unsigned long timeFromNowMs = factor * meanDurationMs;
 
-  nextEventTimeMs = currentTimeMs + timeFromNowMs;
+  nextEvent->state = state;
+  nextEvent->referenceTimestampMs = currentTimeMs;
+  nextEvent->periodAfterReferenceMs = timeFromNowMs;
+}
+
+bool LightController::isNextEventScheduled() {
+  return nextEvent->referenceTimestampMs > 0;
+}
+
+void LightController::clearNextEvent() {
+  nextEvent->referenceTimestampMs = 0;
 }
 
 void LightController::_turnOnLight() {
@@ -106,4 +131,8 @@ void LightController::_turnOffLight() {
   if (this->state == LightControllerTurningOff) {
     this->state = LightControllerOff;
   }
+}
+
+LightControllerEvent LightController::_nextEventForTests() {
+  return *(this->nextEvent);
 }
