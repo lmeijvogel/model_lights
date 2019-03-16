@@ -49,6 +49,8 @@ private:
 
   void handleAnimating(unsigned long currentTimeMs);
 
+  void runEventIfDue(unsigned long currentTimeMs);
+  void scheduleNextAnimatingEvent(unsigned long currentTimeMs);
   void scheduleNextEvent(LightControllerState state, unsigned long currentTimeMs, unsigned long meanDurationMs);
 
   bool isNextEventScheduled();

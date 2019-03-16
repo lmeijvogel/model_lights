@@ -43,12 +43,12 @@ void LightController::setAnimating() {
 void LightController::gradualOn(unsigned long currentTimeMs, unsigned long transitionTimeMs) {
   clearNextEvent();
 
-  if (!lightIsOn) {
+  if (lightIsOn) {
+    this->state = LightControllerOn;
+  } else {
     this->state = LightControllerTurningOn;
 
     scheduleNextEvent(LightControllerOn, currentTimeMs, transitionTimeMs / 3);
-  } else {
-    this->state = LightControllerOn;
   }
 }
 
@@ -71,26 +71,34 @@ void LightController::cycle(int) {
 void LightController::clockTick(unsigned long currentTimeMs) {
   bool nextEventScheduled = isNextEventScheduled();
 
-  if (this->state == LightControllerAnimating && !nextEventScheduled) {
-    if (lightIsOn) {
-      scheduleNextEvent(LightControllerOff, currentTimeMs, onTimeDurationMs);
-    } else {
-      scheduleNextEvent(LightControllerOn, currentTimeMs, offTimeDurationMs);
+  if (nextEventScheduled) {
+    runEventIfDue(currentTimeMs);
+  } else {
+    if (this->state == LightControllerAnimating) {
+      scheduleNextAnimatingEvent(currentTimeMs);
     }
   }
+}
 
-  if (nextEventScheduled) {
-    unsigned long nextEventTimeMs = nextEvent->referenceTimestampMs + nextEvent->periodAfterReferenceMs;
+void LightController::runEventIfDue(unsigned long currentTimeMs) {
+  unsigned long nextEventTimeMs = nextEvent->referenceTimestampMs + nextEvent->periodAfterReferenceMs;
 
-    if (nextEventTimeMs < currentTimeMs) {
-      if (nextEvent->state == LightControllerOn) {
-        _turnOffLight();
-      } else if (nextEvent->state == LightControllerOff) {
-        _turnOnLight();
-      }
-
-      clearNextEvent();
+  if (nextEventTimeMs < currentTimeMs) {
+    if (nextEvent->state == LightControllerOn) {
+      _turnOnLight();
+    } else if (nextEvent->state == LightControllerOff) {
+      _turnOffLight();
     }
+
+    clearNextEvent();
+  }
+}
+
+void LightController::scheduleNextAnimatingEvent(unsigned long currentTimeMs) {
+  if (lightIsOn) {
+    scheduleNextEvent(LightControllerOff, currentTimeMs, onTimeDurationMs);
+  } else {
+    scheduleNextEvent(LightControllerOn, currentTimeMs, offTimeDurationMs);
   }
 }
 
