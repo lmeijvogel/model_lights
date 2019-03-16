@@ -125,20 +125,12 @@ void LightController::_turnOnLight() {
   pLight->turnOn();
 
   lightIsOn = true;
-
-  if (this->state == LightControllerTurningOn) {
-    this->state = LightControllerAnimating;
-  }
 }
 
 void LightController::_turnOffLight() {
   pLight->turnOff();
 
   lightIsOn = false;
-
-  if (this->state == LightControllerTurningOff) {
-    this->state = LightControllerOff;
-  }
 }
 
 LightControllerEvent LightController::_nextEventForTests() {
