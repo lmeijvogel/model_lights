@@ -5,6 +5,7 @@
 #include "StateMachine.h"
 #include "RandomGenerator.h"
 #include "PhysicalButton.h"
+#include "CircularActivator.h"
 
 typedef LightController* LightControllerPtr;
 typedef LedLight* LedLightPtr;
@@ -29,6 +30,8 @@ PhysicalButton *offButton;
 
 LedLight *statusLight;
 
+CircularActivator *circularActivator;
+
 void setup() {
   statusLight = new LedLight(LED_BUILTIN);
 
@@ -52,7 +55,9 @@ void setup() {
 
   LightControllerPtr *lightControllers = createLightControllers(lights, NUMBER_OF_LIGHTS, &randomGenerator);
 
-  lightCollectionController = new LightCollectionController(lightControllers, NUMBER_OF_LIGHTS);
+  circularActivator = new CircularActivator((AbstractLightControllerPtr *)lightControllers, NUMBER_OF_LIGHTS, 5);
+
+  lightCollectionController = new LightCollectionController(lightControllers, circularActivator, NUMBER_OF_LIGHTS);
 
   stateMachine = new StateMachine(lightCollectionController);
   stateMachine->switchOff();
