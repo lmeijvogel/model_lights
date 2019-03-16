@@ -12,6 +12,9 @@
 #include "src/Light.h"
 #include "src/GuiLight.h"
 #include "src/CircularActivator.h"
+#include "Gui.h"
+#include "NCursesGui.h"
+#include "BareGui.h"
 
 const int NUMBER_OF_LIGHTS = 50;
 const int GRADUAL_TRANSITION_PERIOD_MS = 10*1000;
@@ -28,6 +31,8 @@ GuiLightPtr *createLights();
 LightControllerPtr *createLightControllers(GuiLightPtr *lights, int count, RandomGenerator *randomGenerator);
 
 CircularActivator *circularActivator;
+
+Gui *gui;
 
 void print_intro();
 
@@ -50,6 +55,10 @@ void sigIntReceived(int s) {
 int main() {
   auto startTime = std::chrono::system_clock::now();
 
+  gui = new NCursesGui();
+
+  gui->init();
+
   GuiLightPtr *lights = createLights();
 
   // Use a single generator to make sure that all lights get *different* random timings.
@@ -70,8 +79,6 @@ int main() {
 
   StateMachine stateMachine(&lightCollectionController);
   WheelStateMachine wheelStateMachine(&lightCollectionController);
-
-  initscr();
 
   print_intro();
   cbreak();
@@ -129,16 +136,16 @@ LightControllerPtr *createLightControllers(GuiLightPtr *lights, int count, Rando
 }
 
 void print_intro() {
-  printw("q: Quit\n");
-  printw("z: Turn off\n");
-  printw("x: Gradual\n");
-  printw("c: Turn on\n");
-  printw("\n");
-  printw("a: Start cycling\n");
-  printw("s: Cycle -2\n");
-  printw("d: Cycle -1\n");
-  printw("f: Cycle 1\n");
-  printw("g: Cycle 2\n");
+  gui->print(0, (char *)"q: Quit\n");
+  gui->print(0, (char *)"z: Turn off\n");
+  gui->print(0, (char *)"x: Gradual\n");
+  gui->print(0, (char *)"c: Turn on\n");
+  gui->print(0, (char *)"\n");
+  gui->print(0, (char *)"a: Start cycling\n");
+  gui->print(0, (char *)"s: Cycle -2\n");
+  gui->print(0, (char *)"d: Cycle -1\n");
+  gui->print(0, (char *)"f: Cycle 1\n");
+  gui->print(0, (char *)"g: Cycle 2\n");
 
   refresh();
 }
@@ -197,7 +204,7 @@ void print_state(StateMachine &stateMachine, WheelStateMachine &wheelStateMachin
     break;
   }
 
-  mvprintw(headerSize + 2, 0, description);
+  gui->print(headerSize + 2, description);
 
   switch (wheelStateMachine.getState()) {
     case StateCycling:
@@ -214,20 +221,23 @@ void print_state(StateMachine &stateMachine, WheelStateMachine &wheelStateMachin
         break;
   }
 
-  mvprintw(headerSize + 4, 0, description);
+  gui->print(headerSize + 4, description);
 
   refresh();
 }
 
 void print_lights(GuiLightPtr *lights) {
+  char line[NUMBER_OF_LIGHTS * 2 + 2];
+
   for (int i = 0 ; i < NUMBER_OF_LIGHTS ; i++ ) {
     GuiLightPtr pLight = (GuiLightPtr)lights[i];
 
-    int xPos = i * 2;
-    const char *lightDisp = pLight->getState() ? "*" : ".";
-
-    mvprintw(headerSize + 6, 10+xPos, "%s", lightDisp);
+    line[2*i] = pLight->getState() ? '*' : '.';
+    line[2*i+1] = ' ';
   }
+  line[NUMBER_OF_LIGHTS * 2] = '\n';
+
+  gui->print(headerSize + 6, line);
 }
 
 int seconds_since_epoch() {

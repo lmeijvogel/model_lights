@@ -14,8 +14,8 @@ upload:
 
 all: default arduino
 
-bin/main: main.cpp $(APP_FILES_O)
-	$(CXX) main.cpp $(APP_FILES_O) $(CXXFLAGS) -lncurses -o $@
+bin/main: main.cpp $(APP_FILES_O) obj/BareGui.o obj/NCursesGui.o
+	$(CXX) main.cpp $(APP_FILES_O) obj/BareGui.o obj/NCursesGui.o $(CXXFLAGS) -lncurses -o $@
 
 clean:
 	rm -rf bin
@@ -63,6 +63,12 @@ obj/StateMachine.o: src/StateMachine.h src/StateMachine.cpp src/AbstractLightCon
 
 obj/WheelStateMachine.o: src/WheelStateMachine.h src/WheelStateMachine.cpp src/AbstractLightController.h
 	$(CXX) src/WheelStateMachine.cpp -c -o $@ $(CXXFLAGS)
+
+obj/BareGui.o: BareGui.h BareGui.cpp Gui.h
+	$(CXX) BareGui.cpp -c -o $@ $(CXXFLAGS)
+
+obj/NCursesGui.o: NCursesGui.h NCursesGui.cpp Gui.h
+	$(CXX) NCursesGui.cpp -c -o $@ $(CXXFLAGS)
 
 obj/LightController.o: src/LightController.h src/LightController.cpp src/AbstractLightController.h
 	$(CXX) src/LightController.cpp -c -o $@ $(CXXFLAGS)
