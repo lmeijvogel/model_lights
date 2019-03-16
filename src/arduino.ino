@@ -40,16 +40,16 @@ void setup() {
   RandomGenerator randomGenerator(startTime);
 
   int gradualButtonId = 2;
-  int offButtonId = 4;
+  int offButtonId = 3;
 
   gradualButton = new PhysicalButton(gradualButtonId);
   offButton = new PhysicalButton(offButtonId);
 
   int lightIds[NUMBER_OF_LIGHTS];
-  lightIds[0] = 8;
-  lightIds[1] = 9;
-  lightIds[2] = 10;
-  lightIds[3] = 11;
+
+  for (int i = 0 ; i < NUMBER_OF_LIGHTS ; i++) {
+    lightIds[i] = i+4;
+  }
 
   LedLightPtr *lights = createLights(lightIds);
 
