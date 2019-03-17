@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -std=c++0x -g -Wall -pedantic
 
-APP_FILES_O = obj/CircularActivator.o obj/StateMachine.o obj/WheelStateMachine.o obj/LightCollectionController.o obj/LightController.o obj/NullLightController.o obj/GuiLight.o obj/RandomGenerator.o
+APP_FILES_O = obj/ExpanderOutput.o obj/Expander.o obj/CircularActivator.o obj/StateMachine.o obj/WheelStateMachine.o obj/LightCollectionController.o obj/LightController.o obj/NullLightController.o obj/GuiLight.o obj/RandomGenerator.o
 TEST_FILES_O = obj/CircularActivatorTests.o obj/MockLightController.o obj/StateMachineTests.o obj/WheelStateMachineTests.o obj/LightCollectionControllerTests.o obj/LightControllerTests.o $(APP_FILES_O)
 
 default: bin bin/main
@@ -81,6 +81,12 @@ obj/GuiLight.o: src/GuiLight.h src/GuiLight.cpp src/Light.h
 
 obj/RandomGenerator.o: src/RandomGenerator.cpp
 	$(CXX) src/RandomGenerator.cpp -c -o $@ $(CXXFLAGS)
+
+obj/ExpanderOutput.o: ExpanderOutput.h ExpanderOutput.cpp
+	$(CXX) ExpanderOutput.cpp -c -o $@ $(CXXFLAGS)
+
+obj/Expander.o: Expander.h Expander.cpp
+	$(CXX) Expander.cpp -c -o $@ $(CXXFLAGS)
 
 bin: obj
 	mkdir -p bin
