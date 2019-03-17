@@ -16,9 +16,19 @@ public:
   void wheelPressed();
   void wheelTurned(int steps);
 
+  int getSpeedRotation();
+  double getDelayFactor();
 private:
   AbstractLightController* lightController;
   WheelState state = StateCycling;
+
+  int speedRotation = 0;
+
+  double delayFactor = 1.0;
+
+  double getNewDelayFactor();
+
+  int clipRotation(int steps);
 };
 
 #endif

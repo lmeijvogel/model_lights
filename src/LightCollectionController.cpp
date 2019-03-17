@@ -49,6 +49,10 @@ void LightCollectionController::cycle(int steps) {
   this->circularActivator->advance(steps);
 }
 
+void LightCollectionController::changeDelay(double factor) {
+  forEachLightController(pLightController->changeDelay(factor));
+}
+
 void LightCollectionController::clockTick(unsigned long currentTimeMs) {
   forEachLightController(pLightController->clockTick(currentTimeMs));
 }

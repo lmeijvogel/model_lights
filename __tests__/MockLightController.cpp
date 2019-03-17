@@ -24,4 +24,8 @@ void MockLightController::cycle(int steps) {
   this->receivedCycle = steps;
 }
 
+void MockLightController::changeDelay(double factor) {
+  this->receivedChangeDelay = factor;
+}
+
 void MockLightController::clockTick(unsigned long currentTimeMs) { }

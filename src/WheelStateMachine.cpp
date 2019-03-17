@@ -1,5 +1,8 @@
 #include "WheelStateMachine.h"
 
+#include <algorithm>
+#include <cmath>
+
 WheelStateMachine::WheelStateMachine(AbstractLightController* lightController) {
   this->lightController = lightController;
 }
@@ -20,5 +23,37 @@ void WheelStateMachine::wheelPressed() {
 }
 
 void WheelStateMachine::wheelTurned(int steps) {
-  lightController->cycle(steps);
+  switch (state) {
+  case StateCycling:
+    lightController->cycle(steps);
+    break;
+  case StateSpeed:
+    speedRotation = clipRotation(steps);
+
+    double newDelayFactor = getNewDelayFactor();
+
+    lightController->changeDelay(newDelayFactor);
+
+    delayFactor = newDelayFactor;
+    break;
+  }
+}
+
+int WheelStateMachine::clipRotation(int steps) {
+  return std::max(-30, std::min(speedRotation + steps, 30));
+}
+
+double WheelStateMachine::getNewDelayFactor() {
+  // Rotation configures more speed, but the value is used as
+  // a factor with which events are delayed, hence the negation of
+  // speedRotation.
+  return std::pow(1.1, -speedRotation);
+}
+
+int WheelStateMachine::getSpeedRotation() {
+  return speedRotation;
+}
+
+double WheelStateMachine::getDelayFactor() {
+  return delayFactor;
 }

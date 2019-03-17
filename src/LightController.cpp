@@ -68,6 +68,10 @@ void LightController::cycle(int) {
   // Do nothing
 }
 
+void LightController::changeDelay(double factor) {
+  this->configuredDelayFactor = factor;
+}
+
 void LightController::clockTick(unsigned long currentTimeMs) {
   bool nextEventScheduled = isNextEventScheduled();
 
@@ -81,7 +85,8 @@ void LightController::clockTick(unsigned long currentTimeMs) {
 }
 
 void LightController::runEventIfDue(unsigned long currentTimeMs) {
-  unsigned long nextEventTimeMs = nextEvent->referenceTimestampMs + nextEvent->periodAfterReferenceMs;
+  double nextEventOffset = (configuredDelayFactor * nextEvent->periodAfterReferenceMs);
+  unsigned long nextEventTimeMs = nextEvent->referenceTimestampMs + nextEventOffset;
 
   if (nextEventTimeMs < currentTimeMs) {
     if (nextEvent->state == LightControllerOn) {

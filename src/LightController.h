@@ -31,6 +31,7 @@ public:
   virtual void gradualOn(unsigned long currentTimeMs, unsigned long transitionTimeMs);
   virtual void gradualOff(unsigned long currentTimeMs, unsigned long transitionTimeMs);
   virtual void cycle(int);
+  virtual void changeDelay(double factor);
 
   virtual void clockTick(unsigned long currentTimeMs);
 
@@ -45,6 +46,7 @@ private:
   unsigned long onTimeDurationMs;
   unsigned long offTimeDurationMs;
 
+  double configuredDelayFactor = 1.0;
   LightControllerEvent *nextEvent;
 
   void handleAnimating(unsigned long currentTimeMs);

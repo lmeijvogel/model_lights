@@ -3,42 +3,54 @@
 #include "../src/WheelStateMachine.h"
 #include "MockLightController.h"
 
+double truncatedDouble(double number) {
+  return ((int)(number *100))/100.0;
+}
+
 TEST_CASE("Starts in cycling state", "[StateMachine]") {
   MockLightController lightController;
 
-  WheelStateMachine stateMachine(&lightController);
+  WheelStateMachine wheelStateMachine(&lightController);
 
-  REQUIRE(stateMachine.getState() == StateCycling);
+  REQUIRE(wheelStateMachine.getState() == StateCycling);
 
-  stateMachine.wheelTurned(2);
+  wheelStateMachine.wheelTurned(2);
 
   REQUIRE(lightController.receivedCycle == 2);
 }
 
 TEST_CASE("Activating speed state", "[StateMachine]") {
   MockLightController lightController;
-  WheelStateMachine stateMachine(&lightController);
+  WheelStateMachine wheelStateMachine(&lightController);
 
-  stateMachine.wheelPressed();
+  wheelStateMachine.wheelPressed();
 
-  REQUIRE(stateMachine.getState() == StateSpeed);
+  REQUIRE(wheelStateMachine.getState() == StateSpeed);
 
-  stateMachine.wheelTurned(2);
+  wheelStateMachine.wheelTurned(1);
 
-  REQUIRE(lightController.receivedCycle == 2);
+  REQUIRE(truncatedDouble(lightController.receivedChangeDelay) == 0.9);
+
+  wheelStateMachine.wheelTurned(1);
+
+  REQUIRE(truncatedDouble(lightController.receivedChangeDelay) == 0.82);
+
+  wheelStateMachine.wheelTurned(-1);
+
+  REQUIRE(truncatedDouble(lightController.receivedChangeDelay) == 0.9);
 }
 
 TEST_CASE("Transition from speed back to cycling", "[StateMachine]") {
   MockLightController lightController;
-  WheelStateMachine stateMachine(&lightController);
+  WheelStateMachine wheelStateMachine(&lightController);
 
-  REQUIRE(stateMachine.getState() == StateCycling);
+  REQUIRE(wheelStateMachine.getState() == StateCycling);
 
-  stateMachine.wheelPressed();
+  wheelStateMachine.wheelPressed();
 
-  REQUIRE(stateMachine.getState() == StateSpeed);
+  REQUIRE(wheelStateMachine.getState() == StateSpeed);
 
-  stateMachine.wheelPressed();
+  wheelStateMachine.wheelPressed();
 
-  REQUIRE(stateMachine.getState() == StateCycling);
+  REQUIRE(wheelStateMachine.getState() == StateCycling);
 }

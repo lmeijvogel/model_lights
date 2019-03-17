@@ -11,6 +11,7 @@ public:
   virtual void gradualOn(unsigned long currentTimeMs, unsigned long transitionTimeMs);
   virtual void gradualOff(unsigned long currentTimeMs, unsigned long transitionTimeMs);
   virtual void cycle(int steps);
+  virtual void changeDelay(double factor);
 
   virtual void clockTick(unsigned long currentTimeMs);
 
@@ -20,5 +21,6 @@ public:
   int receivedGradualOn = 0;
   int receivedGradualOff = 0;
   int receivedCycle = 0;
+  double receivedChangeDelay = 0;
 };
 #endif

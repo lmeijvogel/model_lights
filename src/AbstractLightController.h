@@ -18,6 +18,7 @@ public:
   virtual void gradualOff(unsigned long currentTimeMs, unsigned long transitionTimeMs) = 0;
 
   virtual void cycle(int steps) = 0;
+  virtual void changeDelay(double factor) = 0;
 
   virtual void clockTick(unsigned long currentTimeMs) = 0;
 };

@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -std=c++0x -g -Wall -pedantic
 
-APP_FILES_O = obj/ExpanderOutput.o obj/Expander.o obj/CircularActivator.o obj/StateMachine.o obj/WheelStateMachine.o obj/LightCollectionController.o obj/LightController.o obj/NullLightController.o obj/GuiLight.o obj/RandomGenerator.o
+APP_FILES_O = obj/CircularActivator.o obj/StateMachine.o obj/WheelStateMachine.o obj/LightCollectionController.o obj/LightController.o obj/NullLightController.o obj/GuiLight.o obj/RandomGenerator.o
 TEST_FILES_O = obj/CircularActivatorTests.o obj/MockLightController.o obj/StateMachineTests.o obj/WheelStateMachineTests.o obj/LightCollectionControllerTests.o obj/LightControllerTests.o $(APP_FILES_O)
 
 default: bin bin/main

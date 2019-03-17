@@ -216,8 +216,11 @@ void print_state(StateMachine &stateMachine, WheelStateMachine &wheelStateMachin
         break;
     case StateSpeed:
         sprintf(description,
-                "%s",
-                "StateSpeed");
+                "%s: % 2d -> %.2f  ",
+                "StateSpeed",
+                wheelStateMachine.getSpeedRotation(),
+                wheelStateMachine.getDelayFactor()
+                );
         break;
   }
 
