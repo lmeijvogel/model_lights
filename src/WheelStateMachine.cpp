@@ -3,8 +3,9 @@
 #include <algorithm>
 #include <cmath>
 
-WheelStateMachine::WheelStateMachine(AbstractLightController* lightController) {
+WheelStateMachine::WheelStateMachine(AbstractLightController* lightController, Delayable* stateMachine) {
   this->lightController = lightController;
+  this->stateMachine = stateMachine;
 }
 
 WheelState WheelStateMachine::getState() {
@@ -33,6 +34,7 @@ void WheelStateMachine::wheelTurned(int steps) {
     double newDelayFactor = getNewDelayFactor();
 
     lightController->changeDelay(newDelayFactor);
+    stateMachine->changeDelay(newDelayFactor);
 
     delayFactor = newDelayFactor;
     break;

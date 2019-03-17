@@ -20,7 +20,8 @@ void StateMachine::switchOff() {
 }
 
 void StateMachine::switchGradual(unsigned long currentTimeMs, unsigned long transitionTimeMs) {
-  this->transitionUntilMs = currentTimeMs + transitionTimeMs;
+  this->transitionStartMs = currentTimeMs;
+  this->transitionTimeMs = transitionTimeMs;
 
   switch(this->_state) {
   case StateTurningOff:
@@ -40,10 +41,18 @@ void StateMachine::switchGradual(unsigned long currentTimeMs, unsigned long tran
   }
 }
 
+void StateMachine::changeDelay(double factor) {
+  this->delayFactor = factor;
+}
+
 void StateMachine::clockTick(unsigned long currentTimeMs) {
   if (_state != StateTurningOn && _state != StateTurningOff) {
     return;
   }
+
+  unsigned long scaledTransitionTimeMs = transitionTimeMs * delayFactor;
+
+  unsigned long transitionUntilMs = transitionStartMs + scaledTransitionTimeMs;
 
   if (transitionUntilMs < currentTimeMs) {
     switch(_state) {

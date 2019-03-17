@@ -68,9 +68,6 @@ TEST_CASE("From TurningOn, pressing switchGradual moves to TurningOff", "[StateM
   StateMachine stateMachine(&lightController);
 
   stateMachine.switchGradual(0, TRANSITION_UNTIL_MS);
-
-  REQUIRE(stateMachine.getState() == StateTurningOn);
-
   stateMachine.switchGradual(0, TRANSITION_UNTIL_MS);
 
   REQUIRE(stateMachine.getState() == StateTurningOff);
@@ -143,4 +140,23 @@ TEST_CASE("From TurningOff to Off", "[StateMachine]") {
   stateMachine.clockTick(tickDuration*2);
   REQUIRE(stateMachine.getState() == StateOff);
   REQUIRE(lightController.receivedSetOff == true);
+}
+
+TEST_CASE("Considers the delay factor when transitioning", "[StateMachine]") {
+  MockLightController lightController;
+  StateMachine stateMachine(&lightController);
+
+  stateMachine.switchGradual(0, TRANSITION_UNTIL_MS);
+  stateMachine.changeDelay(0.5);
+
+  REQUIRE(stateMachine.getState() == StateTurningOn);
+
+  int tickDuration = 31;
+
+  // Due to the new delay factor, 31s at double speed is enough for
+  // a 60s transition delay.
+  stateMachine.clockTick(tickDuration);
+
+  REQUIRE(stateMachine.getState() == StateAnimating);
+  REQUIRE(lightController.receivedAnimating == true);
 }

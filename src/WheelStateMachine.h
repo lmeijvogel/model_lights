@@ -2,6 +2,7 @@
 #define WHEEL_STATE_MACHINE_H
 
 #include "AbstractLightController.h"
+#include "StateMachine.h"
 
 enum WheelState {
                  StateSpeed,
@@ -10,7 +11,7 @@ enum WheelState {
 
 class WheelStateMachine {
 public:
-  WheelStateMachine(AbstractLightController* lightController);
+  WheelStateMachine(AbstractLightController* lightController, Delayable *stateMachine);
   WheelState getState();
 
   void wheelPressed();
@@ -20,6 +21,8 @@ public:
   double getDelayFactor();
 private:
   AbstractLightController* lightController;
+  Delayable* stateMachine;
+
   WheelState state = StateCycling;
 
   int speedRotation = 0;

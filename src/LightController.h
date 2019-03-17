@@ -2,6 +2,7 @@
 #define LIGHT_CONTROLLER_H
 
 #include "AbstractLightController.h"
+#include "Delayable.h"
 #include "Light.h"
 #include "RandomGenerator.h"
 
@@ -19,7 +20,7 @@ struct LightControllerEvent {
   unsigned long periodAfterReferenceMs;
 };
 
-class LightController : public AbstractLightController {
+class LightController : public AbstractLightController, public Delayable {
 public:
   LightController(Light *pLight, RandomGenerator *randomGenerator, unsigned long onTimeDurationMs, unsigned long offTimeDurationMs);
 

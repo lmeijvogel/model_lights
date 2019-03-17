@@ -78,7 +78,7 @@ int main() {
   LightCollectionController lightCollectionController(lightControllers, circularActivator, NUMBER_OF_LIGHTS);
 
   StateMachine stateMachine(&lightCollectionController);
-  WheelStateMachine wheelStateMachine(&lightCollectionController);
+  WheelStateMachine wheelStateMachine(&lightCollectionController, &stateMachine);
 
   print_intro();
   cbreak();
