@@ -19,8 +19,8 @@
 const int NUMBER_OF_LIGHTS = 50;
 const int GRADUAL_TRANSITION_PERIOD_MS = 10*1000;
 
-const int ON_TIME_DURATION = 60*1000;
-const int OFF_TIME_DURATION = 60*1000;
+const int ON_TIME_DURATION = 6*1000;
+const int OFF_TIME_DURATION = 6*1000;
 
 const int headerSize = 10;
 
