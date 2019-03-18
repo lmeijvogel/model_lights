@@ -141,11 +141,11 @@ void print_intro() {
   gui->print(0, (char *)"x: Gradual\n");
   gui->print(0, (char *)"c: Turn on\n");
   gui->print(0, (char *)"\n");
-  gui->print(0, (char *)"a: Start cycling\n");
-  gui->print(0, (char *)"s: Cycle -2\n");
-  gui->print(0, (char *)"d: Cycle -1\n");
-  gui->print(0, (char *)"f: Cycle 1\n");
-  gui->print(0, (char *)"g: Cycle 2\n");
+  gui->print(0, (char *)"<space>: toggle cycling/speed mode\n");
+  gui->print(0, (char *)"a: Cycle -2\n");
+  gui->print(0, (char *)"s: Cycle -1\n");
+  gui->print(0, (char *)"d: Cycle 1\n");
+  gui->print(0, (char *)"f: Cycle 2\n");
 
   refresh();
 }
@@ -161,19 +161,19 @@ void handle_input(int ch, StateMachine &stateMachine, WheelStateMachine &wheelSt
   case 'c':
     stateMachine.switchOn();
     break;
-  case 'a':
+  case ' ':
     wheelStateMachine.wheelPressed();
     break;
-  case 's':
+  case 'a':
     wheelStateMachine.wheelTurned(-2);
     break;
-  case 'd':
+  case 's':
     wheelStateMachine.wheelTurned(-1);
     break;
-  case 'f':
+  case 'd':
     wheelStateMachine.wheelTurned(1);
     break;
-  case 'g':
+  case 'f':
     wheelStateMachine.wheelTurned(2);
     break;
 
