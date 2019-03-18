@@ -23,7 +23,7 @@ unsigned long startTime;
 
 LightControllerPtr *createLightControllers(LightPtr *lights, int count, RandomGenerator *randomGenerator);
 
-void pollButtons(unsigned long currentTimeMs);
+void pollButtons();
 void readButtons(StateMachine *stateMachine, unsigned long currentTimeMs);
 void showStatus(State state);
 
@@ -38,6 +38,9 @@ ExpanderPtr *expanders;
 LedLight *statusLight;
 
 CircularActivator *circularActivator;
+
+boolean previousOffButtonPressed = false;
+boolean previousGradualButtonPressed = false;
 
 void setup() {
   Serial.begin(9600);
@@ -77,7 +80,7 @@ void setup() {
 void loop() {
   unsigned long now = millis();
 
-  pollButtons(now);
+  pollButtons();
   readButtons(stateMachine, now);
 
   stateMachine->clockTick(now);
@@ -102,17 +105,23 @@ LightControllerPtr *createLightControllers(LightPtr *lights, int count, RandomGe
   return lightControllers;
 }
 
-void pollButtons(unsigned long currentTimeMs) {
-  gradualButton->clockTick(currentTimeMs);
-  offButton->clockTick(currentTimeMs);
+void pollButtons() {
+  gradualButton->clockTick();
+  offButton->clockTick();
 }
 
 void readButtons(StateMachine *stateMachine, unsigned long currentTimeMs ) {
-  if (offButton->isPressed()) {
+  boolean offButtonPressed = offButton->isPressed();
+  boolean gradualButtonPressed = gradualButton->isPressed();
+
+  if (offButtonPressed && !previousOffButtonPressed) {
     stateMachine->switchOff();
-  } else if (gradualButton->isPressed()) {
+  } else if (gradualButtonPressed && !previousGradualButtonPressed) {
     stateMachine->switchGradual(currentTimeMs, 5000);
   }
+
+  previousOffButtonPressed = offButtonPressed;
+  previousGradualButtonPressed = gradualButtonPressed;
 }
 
 void showStatus(State state) {
