@@ -1,8 +1,7 @@
 // the setup function runs once when you press reset or power the board
 #include "LightCollectionController.h"
 #include "LightController.h"
-#include "ExpanderOutput.h"
-#include "Expander.h"
+#include "ExpanderFactory.h"
 #include "LedLight.h"
 #include "StateMachine.h"
 #include "RandomGenerator.h"
@@ -11,19 +10,18 @@
 
 #include "Wire.h"
 
-#define PCF8574_ADDR (0x20)
+const int NUMBER_OF_EXPANDERS = 2;
+int EXPANDER_ADDRESSES[] = { 0x20, 0x22 };
 
 typedef LightController* LightControllerPtr;
 typedef Light* LightPtr;
-typedef ExpanderOutput* ExpanderOutputPtr;
 
-const int NUMBER_OF_LIGHTS = 8;
+const int NUMBER_OF_LIGHTS = 12;
 const int NUMBER_OF_BUTTONS = 2;
 
 unsigned long startTime;
 
 LightControllerPtr *createLightControllers(LightPtr *lights, int count, RandomGenerator *randomGenerator);
-ExpanderOutputPtr *createLights(Expander *expander, int numberOfLights);
 
 void pollButtons(unsigned long currentTimeMs);
 void readButtons(StateMachine *stateMachine, unsigned long currentTimeMs);
@@ -35,13 +33,16 @@ StateMachine *stateMachine;
 PhysicalButton *gradualButton;
 PhysicalButton *offButton;
 
+ExpanderPtr *expanders;
+
 LedLight *statusLight;
 
 CircularActivator *circularActivator;
 
-Expander *expander;
-
 void setup() {
+  Serial.begin(9600);
+
+  Serial.println("Started!");
   Wire.begin();
 
   statusLight = new LedLight(LED_BUILTIN);
@@ -56,8 +57,11 @@ void setup() {
   gradualButton = new PhysicalButton(gradualButtonId);
   offButton = new PhysicalButton(offButtonId);
 
-  expander = new Expander(PCF8574_ADDR);
-  ExpanderOutputPtr *lights = createLights(expander, NUMBER_OF_LIGHTS);
+  LightPtr *lights = new LightPtr[NUMBER_OF_LIGHTS];
+  expanders = new ExpanderPtr[NUMBER_OF_EXPANDERS];
+
+  ExpanderFactory expanderFactory(NUMBER_OF_LIGHTS, NUMBER_OF_EXPANDERS, EXPANDER_ADDRESSES);
+  expanderFactory.build((LightPtr *)lights, expanders);
 
   LightControllerPtr *lightControllers = createLightControllers((LightPtr *)lights, NUMBER_OF_LIGHTS, &randomGenerator);
 
@@ -82,7 +86,9 @@ void loop() {
 
   lightCollectionController->clockTick(now);
 
-  expander->send();
+  for (int i = 0 ; i < NUMBER_OF_EXPANDERS ; i++) {
+    expanders[i]->send();
+  }
 }
 
 LightControllerPtr *createLightControllers(LightPtr *lights, int count, RandomGenerator *randomGenerator) {
@@ -94,18 +100,6 @@ LightControllerPtr *createLightControllers(LightPtr *lights, int count, RandomGe
   }
 
   return lightControllers;
-}
-
-ExpanderOutputPtr *createLights(Expander *expander, int numberOfLights) {
-  ExpanderOutputPtr *result = new ExpanderOutputPtr[numberOfLights];
-
-  for (int i = 0 ; i < numberOfLights ; i++) {
-    ExpanderOutputPtr light = new ExpanderOutput(expander, i);
-
-    result[i] = light;
-  }
-
-  return result;
 }
 
 void pollButtons(unsigned long currentTimeMs) {
