@@ -187,20 +187,19 @@ void print_state(StateMachine &stateMachine, WheelStateMachine &wheelStateMachin
 
   switch (state) {
   case StateOff:
-    strcpy(description, "StateOff");
-
+    sprintf(description, "%-59s", "StateOff");
     break;
   case StateTurningOn:
-    strcpy(description, "StateTurningOn");
+    sprintf(description, "%-59s", "StateTurningOn");
     break;
   case StateAnimating:
-    strcpy(description, "StateAnimating");
+    sprintf(description, "%-59s", "StateAnimating");
     break;
   case StateOn:
-    strcpy(description, "StateOn");
+    sprintf(description, "%-59s", "StateOn");
     break;
   case StateTurningOff:
-    strcpy(description, "StateTurningOff");
+    sprintf(description, "%-59s", "StateTurningOff");
     break;
   }
 
@@ -238,7 +237,8 @@ void print_lights(GuiLightPtr *lights) {
     line[2*i] = pLight->getState() ? '*' : '.';
     line[2*i+1] = ' ';
   }
-  line[NUMBER_OF_LIGHTS * 2] = '\n';
+  line[NUMBER_OF_LIGHTS * 2 - 2] = '\n';
+  line[NUMBER_OF_LIGHTS * 2 - 1] = 0;
 
   gui->print(headerSize + 6, line);
 }
