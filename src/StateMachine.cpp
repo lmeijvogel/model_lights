@@ -3,6 +3,7 @@
 StateMachine::StateMachine(AbstractLightController *lightController) {
   this->_state = StateOff;
   this->lightController = lightController;
+  this->setState(StateOff);
 }
 
 State StateMachine::getState() {
@@ -10,12 +11,12 @@ State StateMachine::getState() {
 }
 
 void StateMachine::switchOn() {
-  this->_state = StateOn;
+  this->setState(StateOn);
   this->lightController->setOn();
 }
 
 void StateMachine::switchOff() {
-  this->_state = StateOff;
+  this->setState(StateOff);
   this->lightController->setOff();
 }
 
@@ -26,13 +27,13 @@ void StateMachine::switchGradual(unsigned long currentTimeMs, unsigned long tran
   switch(this->_state) {
   case StateTurningOff:
   case StateOff:
-    this->_state = StateTurningOn;
+    this->setState(StateTurningOn);
     this->lightController->gradualOn(currentTimeMs, transitionTimeMs);
     break;
   case StateTurningOn:
   case StateOn:
   case StateAnimating:
-    this->_state = StateTurningOff;
+    this->setState(StateTurningOff);
     this->lightController->gradualOff(currentTimeMs, transitionTimeMs);
     break;
   default:
@@ -57,11 +58,11 @@ void StateMachine::clockTick(unsigned long currentTimeMs) {
   if (transitionUntilMs < currentTimeMs) {
     switch(_state) {
     case StateTurningOn:
-      this->_state = StateAnimating;
+      this->setState(StateAnimating);
       this->lightController->setAnimating();
       break;
     case StateTurningOff:
-      this->_state = StateOff;
+      this->setState(StateOff);
       this->lightController->setOff();
       break;
     default:
@@ -72,5 +73,10 @@ void StateMachine::clockTick(unsigned long currentTimeMs) {
 }
 
 void StateMachine::_switchAnimatingForTest() {
-  this->_state = StateAnimating;
+  this->setState(StateAnimating);
+}
+
+void StateMachine::setState(State state) {
+  this->_state = state;
+  this->statusLedController->setState(state);
 }

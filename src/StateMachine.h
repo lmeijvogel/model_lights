@@ -34,5 +34,7 @@ private:
   unsigned long transitionStartMs = 0;
   unsigned long transitionTimeMs = 0;
   double delayFactor = 1.0;
+
+  void setState(State state);
 };
 #endif
