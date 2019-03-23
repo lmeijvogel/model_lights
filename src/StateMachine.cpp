@@ -1,8 +1,9 @@
 #include "StateMachine.h"
 
-StateMachine::StateMachine(AbstractLightController *lightController) {
+StateMachine::StateMachine(AbstractLightController *lightController, AbstractStatusLedController *statusLedController) {
   this->_state = StateOff;
   this->lightController = lightController;
+  this->statusLedController = statusLedController;
   this->setState(StateOff);
 }
 

@@ -2,12 +2,13 @@
 #define STATE_MACHINE_HPP
 
 #include "AbstractLightController.h"
+#include "AbstractStatusLedController.h"
 #include "Delayable.h"
 #include "State.h"
 
 class StateMachine : public Delayable {
 public:
-  StateMachine(AbstractLightController *lightController);
+  StateMachine(AbstractLightController *lightController, AbstractStatusLedController *statusLedController);
 
   State getState();
 
@@ -24,6 +25,7 @@ public:
 private:
   State _state;
   AbstractLightController *lightController;
+  AbstractStatusLedController *statusLedController;
   unsigned long transitionStartMs = 0;
   unsigned long transitionTimeMs = 0;
   double delayFactor = 1.0;

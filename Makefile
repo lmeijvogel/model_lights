@@ -1,8 +1,8 @@
 CXX = g++
 CXXFLAGS = -std=c++0x -g -Wall -pedantic
 
-APP_FILES_O = obj/CircularActivator.o obj/StateMachine.o obj/WheelStateMachine.o obj/LightCollectionController.o obj/LightController.o obj/NullLightController.o obj/GuiLight.o obj/RandomGenerator.o
-TEST_FILES_O = obj/CircularActivatorTests.o obj/MockLightController.o obj/StateMachineTests.o obj/WheelStateMachineTests.o obj/LightCollectionControllerTests.o obj/LightControllerTests.o $(APP_FILES_O)
+APP_FILES_O = obj/CircularActivator.o obj/StatusLedController.o obj/StateMachine.o obj/WheelStateMachine.o obj/LightCollectionController.o obj/LightController.o obj/NullLightController.o obj/GuiLight.o obj/RandomGenerator.o
+TEST_FILES_O = obj/CircularActivatorTests.o obj/MockStatusLedController.o obj/MockLightController.o obj/StateMachineTests.o obj/WheelStateMachineTests.o obj/LightCollectionControllerTests.o obj/LightControllerTests.o $(APP_FILES_O)
 
 default: bin bin/main
 
@@ -37,6 +37,9 @@ obj/catch.o:  __tests__/suite.cpp
 obj/MockLightController.o: __tests__/MockLightController.cpp __tests__/MockLightController.h
 	$(CXX) __tests__/MockLightController.cpp -c -o $@ $(CXXFLAGS)
 
+obj/MockStatusLedController.o: __tests__/MockStatusLedController.cpp __tests__/MockStatusLedController.h
+	$(CXX) __tests__/MockStatusLedController.cpp -c -o $@ $(CXXFLAGS)
+
 obj/CircularActivatorTests.o: __tests__/CircularActivatorTests.cpp
 	$(CXX) __tests__/CircularActivatorTests.cpp -c -o $@ $(CXXFLAGS)
 
@@ -57,6 +60,9 @@ obj/LightCollectionController.o: src/LightCollectionController.h src/LightCollec
 
 obj/CircularActivator.o: src/CircularActivator.h src/CircularActivator.cpp src/AbstractLightController.h
 	$(CXX) src/CircularActivator.cpp -c -o $@ $(CXXFLAGS)
+
+obj/StatusLedController.o: src/StatusLedController.h src/StatusLedController.cpp src/AbstractStatusLedController.h src/State.h
+	$(CXX) src/StatusLedController.cpp -c -o $@ $(CXXFLAGS)
 
 obj/StateMachine.o: src/StateMachine.h src/StateMachine.cpp src/AbstractLightController.h src/State.h
 	$(CXX) src/StateMachine.cpp -c -o $@ $(CXXFLAGS)

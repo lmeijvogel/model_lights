@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "src/StateMachine.h"
+#include "src/StatusLedController.h"
 #include "src/WheelStateMachine.h"
 #include "src/LightCollectionController.h"
 #include "src/LightController.h"
@@ -27,6 +28,10 @@ const int headerSize = 10;
 typedef LightController* LightControllerPtr;
 typedef GuiLight* GuiLightPtr;
 
+Light *statusOffLight = new GuiLight();
+Light *statusGradualLight = new GuiLight();
+Light *statusOnLight = new GuiLight();
+
 GuiLightPtr *createLights();
 LightControllerPtr *createLightControllers(GuiLightPtr *lights, int count, RandomGenerator *randomGenerator);
 
@@ -38,6 +43,7 @@ void print_intro();
 
 void print_state(StateMachine &stateMachine, WheelStateMachine &wheelStateMachine);
 void print_lights(GuiLightPtr *lights);
+void print_status_leds();
 
 void handle_input(int ch, StateMachine &stateMachine, WheelStateMachine &wheelStateMachine, int elapsedTimeMs);
 int seconds_since_epoch();
@@ -77,7 +83,10 @@ int main() {
   circularActivator = new CircularActivator((AbstractLightControllerPtr *)lightControllers, NUMBER_OF_LIGHTS, 5);
   LightCollectionController lightCollectionController(lightControllers, circularActivator, NUMBER_OF_LIGHTS);
 
-  StateMachine stateMachine(&lightCollectionController);
+
+  StatusLedController statusLedController(statusOffLight, statusGradualLight, statusOnLight);
+
+  StateMachine stateMachine(&lightCollectionController, &statusLedController);
   WheelStateMachine wheelStateMachine(&lightCollectionController, &stateMachine);
 
   print_intro();
@@ -107,6 +116,7 @@ int main() {
     }
     print_state(stateMachine, wheelStateMachine);
     print_lights(lights);
+    print_status_leds();
 
     refresh();
   }
@@ -241,6 +251,21 @@ void print_lights(GuiLightPtr *lights) {
   line[NUMBER_OF_LIGHTS * 2 - 1] = 0;
 
   gui->print(headerSize + 6, line);
+}
+
+void add_status_led(GuiLightPtr pLight, int position, char *output) {
+    output[2*position] = pLight->getState() ? '*' : '.';
+    output[2*position+1] = ' ';
+}
+
+void print_status_leds() {
+  char line[3 * 2 + 2];
+
+  add_status_led((GuiLightPtr)statusOffLight, 0, line);
+  add_status_led((GuiLightPtr)statusGradualLight, 1, line);
+  add_status_led((GuiLightPtr)statusOnLight, 2, line);
+
+  gui->print(headerSize + 8, line);
 }
 
 int seconds_since_epoch() {
