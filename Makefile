@@ -58,7 +58,7 @@ obj/LightCollectionController.o: src/LightCollectionController.h src/LightCollec
 obj/CircularActivator.o: src/CircularActivator.h src/CircularActivator.cpp src/AbstractLightController.h
 	$(CXX) src/CircularActivator.cpp -c -o $@ $(CXXFLAGS)
 
-obj/StateMachine.o: src/StateMachine.h src/StateMachine.cpp src/AbstractLightController.h
+obj/StateMachine.o: src/StateMachine.h src/StateMachine.cpp src/AbstractLightController.h src/State.h
 	$(CXX) src/StateMachine.cpp -c -o $@ $(CXXFLAGS)
 
 obj/WheelStateMachine.o: src/WheelStateMachine.h src/WheelStateMachine.cpp src/AbstractLightController.h

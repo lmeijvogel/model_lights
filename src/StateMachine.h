@@ -3,14 +3,7 @@
 
 #include "AbstractLightController.h"
 #include "Delayable.h"
-
-enum State {
-             StateOff,
-             StateTurningOn,
-             StateAnimating,
-             StateOn,
-             StateTurningOff,
-};
+#include "State.h"
 
 class StateMachine : public Delayable {
 public:
