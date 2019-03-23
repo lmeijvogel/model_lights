@@ -4,5 +4,6 @@
 BOARD_TAG    = mega2560
 # BOARD_TAG    = uno
 ARDUINO_PORT = /dev/ttyACM0
-CXXFLAGS_STD = -std=c++11 -Wall -Wextra -pedantic
+CXXFLAGS_STD = -std=c++11
+CXXFLAGS = -Wall -Wextra -pedantic
 include ./Arduino-Makefile/Arduino.mk
