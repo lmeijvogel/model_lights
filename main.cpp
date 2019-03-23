@@ -87,7 +87,7 @@ int main() {
   refresh();
 
   while (true) {
-    usleep(200000);
+    usleep(50000);
 
     auto now = std::chrono::system_clock::now();
 
