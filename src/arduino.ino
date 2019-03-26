@@ -4,19 +4,25 @@
 #include "ExpanderFactory.h"
 #include "LedLight.h"
 #include "StateMachine.h"
+#include "StatusLedController.h"
 #include "RandomGenerator.h"
 #include "PhysicalButton.h"
 #include "CircularActivator.h"
 
 #include "Wire.h"
 
-const int NUMBER_OF_EXPANDERS = 2;
-int EXPANDER_ADDRESSES[] = { 0x20, 0x22 };
+const int NUMBER_OF_EXPANDERS = 8;
+int EXPANDER_ADDRESSES[] = { 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27 };
 
+const int LED_PINS[] = { 8, 9, 10, 11 };
 typedef LightController* LightControllerPtr;
 typedef Light* LightPtr;
 
-const int NUMBER_OF_LIGHTS = 12;
+const int NUMBER_OF_LIGHTS = 64;
+const int NUMBER_OF_LEDS = 4;
+
+const int TOTAL_NUMBER_OF_LIGHTS = NUMBER_OF_LIGHTS + NUMBER_OF_LEDS;
+
 const int NUMBER_OF_BUTTONS = 2;
 
 unsigned long startTime;
@@ -37,10 +43,14 @@ ExpanderPtr *expanders;
 
 LedLight *statusLight;
 
+LedLight *statusOnLight, *statusOffLight, *statusGradualLight;
+
 CircularActivator *circularActivator;
 
 boolean previousOffButtonPressed = false;
 boolean previousGradualButtonPressed = false;
+
+StatusLedController *statusLedController;
 
 void setup() {
   Serial.begin(9600);
@@ -49,6 +59,9 @@ void setup() {
   Wire.begin();
 
   statusLight = new LedLight(LED_BUILTIN);
+  statusOnLight = new LedLight(LED_BUILTIN);
+  statusGradualLight = new LedLight(LED_BUILTIN);
+  statusOffLight = new LedLight(LED_BUILTIN);
 
   startTime = millis();
 
@@ -60,19 +73,25 @@ void setup() {
   gradualButton = new PhysicalButton(gradualButtonId);
   offButton = new PhysicalButton(offButtonId);
 
-  LightPtr *lights = new LightPtr[NUMBER_OF_LIGHTS];
+  LightPtr *lights = new LightPtr[TOTAL_NUMBER_OF_LIGHTS];
   expanders = new ExpanderPtr[NUMBER_OF_EXPANDERS];
 
   ExpanderFactory expanderFactory(NUMBER_OF_LIGHTS, NUMBER_OF_EXPANDERS, EXPANDER_ADDRESSES);
   expanderFactory.build((LightPtr *)lights, expanders);
 
-  LightControllerPtr *lightControllers = createLightControllers((LightPtr *)lights, NUMBER_OF_LIGHTS, &randomGenerator);
+  for (int i = 0 ; i < NUMBER_OF_LEDS ; i++) {
+    lights[NUMBER_OF_LIGHTS + i] = new LedLight(LED_PINS[i]);
+  }
 
-  circularActivator = new CircularActivator((AbstractLightControllerPtr *)lightControllers, NUMBER_OF_LIGHTS, 5);
+  LightControllerPtr *lightControllers = createLightControllers((LightPtr *)lights, TOTAL_NUMBER_OF_LIGHTS, &randomGenerator);
 
-  lightCollectionController = new LightCollectionController(lightControllers, circularActivator, NUMBER_OF_LIGHTS);
+  statusLedController = new StatusLedController(statusOffLight, statusGradualLight, statusOnLight);
 
-  stateMachine = new StateMachine(lightCollectionController);
+  circularActivator = new CircularActivator((AbstractLightControllerPtr *)lightControllers, TOTAL_NUMBER_OF_LIGHTS, 5);
+
+  lightCollectionController = new LightCollectionController(lightControllers, circularActivator, TOTAL_NUMBER_OF_LIGHTS);
+
+  stateMachine = new StateMachine(lightCollectionController, statusLedController);
   stateMachine->switchGradual(millis(), 10000);
 }
 
